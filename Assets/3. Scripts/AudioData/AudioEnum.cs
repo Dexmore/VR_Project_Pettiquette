@@ -12,7 +12,7 @@ public class SceneBgmData // 각 Scene에 맞는 BGM
 [Serializable]
 public class SFXData // SFX 데이터들을 저장하여 관리하다 필요한 경우 사용함
 {
-    public string sfxName;
+    public SFXCategory category;
     public AudioClip sfxClip;
 }
 #endregion

@@ -6,34 +6,42 @@ using System;
 
 public class AudioManager : MonoBehaviour
 {
+    public static AudioManager Instance; // 싱글톤 활성화 => Instance를 통해 다른 스크립트에 접근 가능
+
     [Header("각 Scene에 맞는 BGM 설정")]
     public AudioSource bgmOutput;
     public List<SceneBgmData> bgmDatas;
 
     [Header("효과음 설정")]
-    public AudioSource sfxOutput;
     public List<SFXData> sfxDatas;
 
-    public static AudioManager Instance; // 싱글톤 활성화 => Instance를 통해 다른 스크립트에 접근 가능
+    [Header("SFX 오브젝트 풀링")]
+    public GameObject sfxPlayerPrefab;
+    public int sfxPoolSize = 10;
+
+    private Queue<SFXPlayer> sfxPool = new Queue<SFXPlayer>();
 
     private string currentSceneName = ""; // 현재 Scene 이름 저장
-
-    private string volumeDataFilePath = Path.Combine(Application.persistentDataPath, "SFXVolumeData.json");
-
     private Dictionary<SFXCategory, float> sfxVolumeDatas = new Dictionary<SFXCategory, float>();
+
+    private string volumeDataFilePath;
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject); // 싱글톤 설정
+
+            LoadSFXVolume(); // 게임 시작할때 불러오기
+            volumeDataFilePath = Path.Combine(Application.persistentDataPath, "VolumeData.json"); // Sound Volume 경로 설정
+            InitPool();
         }
         else
         {
             Destroy(gameObject);
         }
-        LoadSFXVolume(); // 게임 시작할때 불러오기
+
         SceneManager.sceneLoaded += SceneLoaded; // Scene을 로드할 때마다 각 Scene에 맞는 BGM이 나올 수 있도록 설정
-        DontDestroyOnLoad(gameObject);
     }
 
     void Start()
@@ -51,6 +59,23 @@ public class AudioManager : MonoBehaviour
         PlayBGM(scene.name);
     }
 
+    private void InitPool()
+    {
+        for(int i = 0; i < sfxPoolSize; i++)
+        {
+            GameObject obj = Instantiate(sfxPlayerPrefab);
+            SFXPlayer player = obj.GetComponent<SFXPlayer>();
+            player.Init(this);
+            obj.SetActive(false); // 초기에 비활성화, 이후 필요할때마다 활성화 후 끝나면 반환
+            sfxPool.Enqueue(player); // 추가
+        }
+    }
+
+    public void ReturnSFXPlayer(SFXPlayer player)
+    {
+        player.gameObject.SetActive(false);
+        sfxPool.Enqueue(player);
+    }
     private void PlayBGM(string sceneName)
     {
         if (currentSceneName == sceneName) return;
@@ -71,14 +96,28 @@ public class AudioManager : MonoBehaviour
         bgmOutput.Stop(); // 만약 해당 Scene과 맞는 AudioClip이 없으면 정지
     }
 
-    public void PlaySFX(SFXCategory category)// Audio Source를 들고 이거를 하세요!!!!!
+    public void PlaySFX(SFXCategory category, Vector3 pos)// Audio Source를 들고 이거를 하세요!!!!!
     {
-        SFXData matchData = sfxDatas.Find(data => data.sfxName == category.ToString());
+        SFXData matchData = sfxDatas.Find(data => data.category == category);
 
-        if(matchData != null && matchData.sfxClip != null)
+        if (matchData != null && matchData.sfxClip != null)
         {
-            float volume = sfxVolumeDatas.ContainsKey(category) ? sfxVolumeDatas[category] : 1f;
-            sfxOutput.PlayOneShot(matchData.sfxClip, volume);
+            float volume = GetSFXVolume(category);
+
+            if (sfxPool.Count > 0)
+            {
+                var player = sfxPool.Dequeue();
+                player.gameObject.SetActive(true);
+                player.Play(matchData.sfxClip, volume, pos);
+            }
+            else
+            {
+                Debug.Log("[AudioManager] SFXPlayer in pool is empty");
+            }
+        }
+        else
+        {
+            Debug.Log($"AudioManager] SFX '{category}' not found");
         }
     }
 
