@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class SFXVolumeSliderGenerator : MonoBehaviour
 {
@@ -9,10 +10,21 @@ public class SFXVolumeSliderGenerator : MonoBehaviour
     [Header("부모 오브젝트")]
     public Transform contentParent;
 
+    [Header("UI Button")]
+    public Button button;
+
     private IEnumerator Start()
     {
         yield return new WaitUntil(() => AudioManager.Instance != null && AudioManager.Instance.sfxDatas.Count > 0);
         GenerateSliders();
+
+        button.onClick.AddListener(() =>
+        {
+            if(transform.parent != null)
+            {
+                transform.parent.gameObject.SetActive(false);
+            }
+        });
     }
 
     void GenerateSliders()
