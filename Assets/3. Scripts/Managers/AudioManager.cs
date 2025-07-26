@@ -1,8 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.IO;
-using System;
 
 public class AudioManager : MonoBehaviour
 {
@@ -32,20 +32,27 @@ public class AudioManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject); // 싱글톤 설정
 
-            LoadSFXVolume(); // 게임 시작할때 불러오기
             volumeDataFilePath = Path.Combine(Application.persistentDataPath, "VolumeData.json"); // Sound Volume 경로 설정
+            LoadSFXVolume();
+
             InitPool();
         }
         else
         {
             Destroy(gameObject);
         }
+        Debug.Log("SFX Volume Save Path: " + volumeDataFilePath);
 
         SceneManager.sceneLoaded += SceneLoaded; // Scene을 로드할 때마다 각 Scene에 맞는 BGM이 나올 수 있도록 설정
     }
 
     void Start()
     {
+        float bgmVol = GetSFXVolume(SFXCategory.BGM);
+        if(bgmOutput != null)
+        {
+            bgmOutput.volume = bgmVol;
+        }
         PlayBGM(SceneManager.GetActiveScene().name); // 게임 시작하는 곳의 Scene 이름으로 시작 ex) Lobby Scene에서 시작하는 경우 이 Scene의 BGM이 재생
     }
 
@@ -61,7 +68,7 @@ public class AudioManager : MonoBehaviour
 
     private void InitPool()
     {
-        for(int i = 0; i < sfxPoolSize; i++)
+        for (int i = 0; i < sfxPoolSize; i++)
         {
             GameObject obj = Instantiate(sfxPlayerPrefab);
             SFXPlayer player = obj.GetComponent<SFXPlayer>();
@@ -88,6 +95,7 @@ public class AudioManager : MonoBehaviour
             {
                 bgmOutput.clip = data.bgmClip;
                 bgmOutput.Play();
+                bgmOutput.volume = GetSFXVolume(SFXCategory.BGM);
                 bgmOutput.loop = true; // BGM 반복 재생
                 return;
             }
@@ -95,7 +103,6 @@ public class AudioManager : MonoBehaviour
 
         bgmOutput.Stop(); // 만약 해당 Scene과 맞는 AudioClip이 없으면 정지
     }
-
     public void PlaySFX(SFXCategory category, Vector3 pos)// Audio Source를 들고 이거를 하세요!!!!!
     {
         SFXData matchData = sfxDatas.Find(data => data.category == category);
@@ -124,6 +131,11 @@ public class AudioManager : MonoBehaviour
     public void SetSFXVolume(SFXCategory category, float volume)
     {
         sfxVolumeDatas[category] = volume;
+
+        if(category == SFXCategory.BGM && bgmOutput != null)
+        {
+            bgmOutput.volume = volume;
+        }
         SaveSFXVolume();
     }
 
@@ -134,14 +146,16 @@ public class AudioManager : MonoBehaviour
     public void SaveSFXVolume() // JSON 형태로 저장할 예정
     {
         SFXVolumeData data = new SFXVolumeData();
-
-        foreach(var category in sfxVolumeDatas)
+        data.categoryVolumes = new List<CategoryVolumeData>();
+        
+        foreach(var pair in sfxVolumeDatas)
         {
-            data.categoryVolumes.Add(new CategoryVolumeData
+            CategoryVolumeData cvdata = new CategoryVolumeData
             {
-                categoryName = category.Key.ToString(),
-                categoryVolume = category.Value
-            });
+                categoryName = pair.Key.ToString(),
+                categoryVolume = pair.Value
+            };
+            data.categoryVolumes.Add(cvdata);
         }
 
         string json = JsonUtility.ToJson(data, true);
@@ -155,26 +169,24 @@ public class AudioManager : MonoBehaviour
         if (!File.Exists(volumeDataFilePath))
         {
             Debug.Log("SFX volume file Not Found, create new one");
+            CreateDefaultVolume();
             return;
         }
 
         string json = File.ReadAllText(volumeDataFilePath);
-
         SFXVolumeData data = JsonUtility.FromJson<SFXVolumeData>(json);
 
-        foreach(var vol in data.categoryVolumes)
+        if (data != null && data.categoryVolumes != null)
         {
-            if(Enum.TryParse(vol.categoryName, out SFXCategory category))
+            foreach (var vol in data.categoryVolumes)
             {
-                sfxVolumeDatas[category] = vol.categoryVolume;
+                if (Enum.TryParse(vol.categoryName, out SFXCategory category))
+                {
+                    sfxVolumeDatas[category] = vol.categoryVolume;
+                }
             }
         }
-
-        CreateDefaultVolume(); // 데이터 없으면 이거 쓰세요
-    }
-
-    private void CreateDefaultVolume()
-    {
+        
         foreach(SFXCategory category in Enum.GetValues(typeof(SFXCategory)))
         {
             if (!sfxVolumeDatas.ContainsKey(category))
@@ -182,5 +194,18 @@ public class AudioManager : MonoBehaviour
                 sfxVolumeDatas[category] = 1f;
             }
         }
+    }
+
+    private void CreateDefaultVolume()
+    {
+        foreach (SFXCategory category in Enum.GetValues(typeof(SFXCategory)))
+        {
+            if (!sfxVolumeDatas.ContainsKey(category))
+            {
+                sfxVolumeDatas[category] = 1f;
+            }
+        }
+
+        SaveSFXVolume();
     }
 }

@@ -20,9 +20,11 @@ public class SFXData // SFX 데이터들을 저장하여 관리하다 필요한 경우 사용함
 #region
 public enum SFXCategory
 {
+    BGM,
     UI,
     Dog,
-    Object
+    Object,
+    AI
 }
 #endregion
 

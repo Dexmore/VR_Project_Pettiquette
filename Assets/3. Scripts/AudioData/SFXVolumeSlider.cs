@@ -3,42 +3,63 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 
-[System.Serializable]
-public class UI_TnS
-{
-    public SFXCategory category;
-    public TextMeshProUGUI text;
-    public Slider slider;
-}
-
 public class SFXVolumeSlider : MonoBehaviour
 {
     [Header("UI Combine")]
-    public List<UI_TnS> uiCombine;
-    void Start()
+    public TextMeshProUGUI text;
+    public Slider slider;
+
+    private SFXCategory category;
+    private void Awake()
     {
-        foreach(var ui in uiCombine)
+        if (text == null)
         {
-            if(ui.text != null)
+            text = GetComponentInChildren<TextMeshProUGUI>();
+            if(text == null)
             {
-                ui.text.text = ui.category.ToString();
+                Debug.Log("[SFXVolumeSlider] Text 못 찾음");
             }
+        }
 
-            float savedVolume = AudioManager.Instance.GetSFXVolume(ui.category);
-            ui.slider.SetValueWithoutNotify(savedVolume);
-
-            ui.slider.onValueChanged.AddListener((value) =>
+        if(slider == null)
+        {
+            slider = GetComponentInChildren<Slider>();
+            if (slider == null)
             {
-                AudioManager.Instance.SetSFXVolume(ui.category, value);
+                Debug.Log("[SFXVolumeSlider] Slider 못 찾음");
+            }
+        }
+    }
+    public void Initialize(SFXCategory category)
+    {
+        this.category = category;
+
+        if(text != null)
+        {
+            text.text = category.ToString();
+        }
+        
+        if(slider != null)
+        {
+            float saveVolume = AudioManager.Instance.GetSFXVolume(category); // 카테고리에 해당하는 볼륨 가지고 오기
+            slider.value = saveVolume;
+
+            slider.onValueChanged.AddListener((value) =>
+            {
+                AudioManager.Instance.SetSFXVolume(category, value);
             });
+        }
+        else
+        {
+            Debug.Log($"[SFXVolumeSlider] {category} 못 찾음");
         }
     }
 
     private void OnDestroy()
     {
-        foreach(var ui in uiCombine)
+        if(slider != null)
         {
-            ui.slider.onValueChanged.RemoveAllListeners();
+            slider.onValueChanged.RemoveAllListeners();
         }
     }
 }
