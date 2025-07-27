@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,116 +5,86 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance;
 
-    [Header("Menu Canvas")]
-    public GameObject MenuCanvas;
+    [Header("UI Parent")]
+    public GameObject uiParent;
 
     [Header("UI Prefabs")]
+    public GameObject menuPrefab;
     public GameObject inventoryPrefab;
     public GameObject settingPrefab;
-    public GameObject HelpUIPrefab;
+    public GameObject helpUIPrefab;
 
-    private Dictionary<string, GameObject> uiInstance = new Dictionary<string, GameObject>();
+    [Header("UI Buttons")]
+    public Button InventoryButton;
+    public Button SettingButton;
+    public Button HelpButton;
+    public Button SaveButton;
+    public Button BackButton;
 
     private void Awake()
     {
-        if(Instance == null)
+        if (Instance == null)
         {
             Instance = this;
-            InitializeUI();
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
             Destroy(gameObject);
         }
-        DontDestroyOnLoad(gameObject);
-    }
-
-    void InitializeUI()
-    {
-        RegisterUI("Inventory", inventoryPrefab);
-        RegisterUI("Setting", settingPrefab);
-        RegisterUI("Help", HelpUIPrefab);
-    }
-
-    void RegisterUI(string uiName, GameObject prefab)
-    {
-        if (prefab == null) return;
-
-        GameObject instance = Instantiate(prefab);
-        instance.name = uiName + "Canvas";
-        instance.SetActive(false); // 초기에는 비활성화 후 나중에 버튼 등을 사용하여 활성화
-        uiInstance[uiName] = instance;
     }
 
     private void Start()
     {
-        SetUpMenuButtons();
+        InventoryButton.onClick.AddListener(() => SwitchToUI(inventoryPrefab));
+        SettingButton.onClick.AddListener(() => SwitchToUI(settingPrefab));
+        HelpButton.onClick.AddListener(() => SwitchToUI(helpUIPrefab));
+        SaveButton.onClick.AddListener(Save);
+        BackButton.onClick.AddListener(CloseMenu);
     }
 
-    void SetUpMenuButtons()
+    public void ToggleMenu()
     {
-        if (MenuCanvas == null) return;
-
-        Button Inventory = MenuCanvas.transform.Find("InventoryButton")?.GetComponent<Button>();
-        Button Setting = MenuCanvas.transform.Find("SettingButton")?.GetComponent<Button>();
-        Button Help = MenuCanvas.transform.Find("HelpButton")?.GetComponent<Button>();
-        Button Save = MenuCanvas.transform.Find("SaveButton")?.GetComponent<Button>();
-        Button Back = MenuCanvas.transform.Find("BackButton")?.GetComponent<Button>();
-
-        if(Inventory != null)
+        if (!uiParent.activeSelf)
         {
-            Inventory.onClick.AddListener(() => ShowUI("Inventory"));
+            OpenMenu();
         }
-
-        if(Setting != null)
+        else
         {
-            Setting.onClick.AddListener(() => ShowUI("Setting"));
-        }
-
-        if(Help != null)
-        {
-            Help.onClick.AddListener(() => ShowUI("Help"));
-        }
-
-        if(Save != null)
-        {
-            Save.onClick.AddListener(() =>
-            {
-                // 저장 로직 여기에 넣으세용
-            });
-        }
-
-        if(Back != null)
-        {
-            Back.onClick.AddListener(() =>
-            {
-                HideUI("Inventory");
-                HideUI("Setting");
-                HideUI("Help");
-
-                MenuCanvas.SetActive(false);
-            });
-        } // 메뉴 비활성화 버튼
-    }
-    public void ShowUI(string uiName)
-    {
-        if (uiInstance.ContainsKey(uiName))
-        {
-            MenuCanvas.SetActive(false);
-            uiInstance[uiName].SetActive(true);
+            CloseMenu();
         }
     }
 
-    public void HideUI(string uiName)
+    public void OpenMenu()
     {
-        if (uiInstance.ContainsKey(uiName))
-        {
-            uiInstance[uiName].SetActive(false);
-        }
+        uiParent.SetActive(true);
+        menuPrefab.SetActive(true);
+        CloseAllSubCanvas();
     }
-    
-    public GameObject GetUI(string uiName)
+
+    public void CloseMenu()
     {
-        return uiInstance.ContainsKey(uiName) ? uiInstance[uiName] : null;
+        CloseAllSubCanvas();
+        uiParent.SetActive(false);
+    }
+
+    public void SwitchToUI(GameObject targetUI)
+    {
+        // 메뉴는 끄고, 해당 UI만 켬
+        menuPrefab.SetActive(false);
+        CloseAllSubCanvas();
+        targetUI.SetActive(true);
+    }
+
+    public void CloseAllSubCanvas()
+    {
+        inventoryPrefab.SetActive(false);
+        settingPrefab.SetActive(false);
+        helpUIPrefab.SetActive(false);
+    }
+
+    public void Save()
+    {
+        Debug.Log("Game Saved!");
     }
 }

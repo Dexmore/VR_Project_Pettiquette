@@ -13,6 +13,9 @@ public class SFXVolumeSliderGenerator : MonoBehaviour
     [Header("UI Button")]
     public Button button;
 
+    [Header("´ÝÀ» ´ë»ó")]
+    public GameObject closeTarget;
+
     private IEnumerator Start()
     {
         yield return new WaitUntil(() => AudioManager.Instance != null && AudioManager.Instance.sfxDatas.Count > 0);
@@ -20,9 +23,10 @@ public class SFXVolumeSliderGenerator : MonoBehaviour
 
         button.onClick.AddListener(() =>
         {
-            if(transform.parent != null)
+            if(closeTarget != null)
             {
-                transform.parent.gameObject.SetActive(false);
+                closeTarget.gameObject.SetActive(false);
+                UIManager.Instance.CloseAllSubCanvas();
             }
         });
     }

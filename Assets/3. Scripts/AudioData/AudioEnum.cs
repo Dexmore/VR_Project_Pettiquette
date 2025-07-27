@@ -24,7 +24,8 @@ public enum SFXCategory
     UI,
     Dog,
     Object,
-    AI
+    AI,
+    Voice
 }
 #endregion
 

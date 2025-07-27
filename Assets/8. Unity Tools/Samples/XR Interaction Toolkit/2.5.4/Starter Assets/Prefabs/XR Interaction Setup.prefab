@@ -188,8 +188,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4134505312059479865}
-  - component: {fileID: 1392368108529674404}
-  - component: {fileID: 6031739033071401188}
+  - component: {fileID: 8984679010209453879}
   m_Layer: 0
   m_Name: XR Interaction Setup
   m_TagString: Untagged
@@ -217,7 +216,7 @@ Transform:
   - {fileID: 9004174401213525338}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1392368108529674404
+--- !u!114 &8984679010209453879
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -226,26 +225,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 7313654230448209575}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 89286aac2c4d773479daa64de5bdbdd3, type: 3}
+  m_Script: {fileID: 11500000, guid: cd6f0129e25a7794dbde7e7b3f66a77d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MenuCanvas: {fileID: 7861531904248605684, guid: 4647607c36eeeb44ab46ac5e35b838d8, type: 3}
-  inventoryPrefab: {fileID: 1759789775867280245, guid: ded12c0e5bf9c094ea2dd91aa6211305, type: 3}
-  settingPrefab: {fileID: 1759789775867280245, guid: ded12c0e5bf9c094ea2dd91aa6211305, type: 3}
-  HelpUIPrefab: {fileID: 1759789775867280245, guid: ded12c0e5bf9c094ea2dd91aa6211305, type: 3}
---- !u!114 &6031739033071401188
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7313654230448209575}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45beb478987365d40a6167d8bf574f0e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  toggleMenuAction: {fileID: -8687747376990552390, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  MenuCanvas: {fileID: 9142751747861429186, guid: f2c571bd28725864b8270e4a23d26d55, type: 3}
+  AudioManager: {fileID: 5463070353127076667, guid: 7f4cbd7b0bdab9148b8c9fb1d1765bb5, type: 3}
+  InventoryManagerPrefab: {fileID: 4261868192695808999, guid: 08401ca593a40514b92a84e9ce40aaf1, type: 3}
 --- !u!1001 &2181405618368934381
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -564,7 +549,7 @@ PrefabInstance:
       objectReference: {fileID: 7200028109908480551, guid: 7878bdc9d0a7d10438ac712895e7a624, type: 3}
     - target: {fileID: 19064736505062540, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_MaxRaycastDistance
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 153982007679157697, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_MoveSpeed
@@ -572,7 +557,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 285389467476424711, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_MaxRaycastDistance
-      value: 10
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 941652828260492489, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_Parameters.widthMultiplier

@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcdc739b83167dc4ebbb48e43b25c743, type: 3}
+  m_Name: Muzzle
+  m_EditorClassIdentifier: 
+  itemName: Muzzle
+  itemDescription: "\uC785\uB9C8\uAC1C"
+  itemIcon: {fileID: 21300000, guid: 17c263f6077f14b218b13656aacd9551, type: 3}
+  itemPrefab: {fileID: 2402334275197623933, guid: 90950c058ce4a3641a481257018385f3, type: 3}
