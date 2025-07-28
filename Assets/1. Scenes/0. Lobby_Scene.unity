@@ -394,7 +394,7 @@ GameObject:
   - component: {fileID: 1518098449}
   - component: {fileID: 1518098450}
   m_Layer: 0
-  m_Name: LobbySceneMoveManager
+  m_Name: SceneMoveManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -428,7 +428,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   aButton: {fileID: 702435422356518805, guid: c348712bda248c246b8c49b3db54643f, type: 3}
-  sceneToLoad: 1.Tutorial_Scene
+  sceneToLoad: 1. Tutorial_Scene
 --- !u!1 &1525225104
 GameObject:
   m_ObjectHideFlags: 0

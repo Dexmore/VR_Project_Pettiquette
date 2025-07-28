@@ -4,6 +4,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class PlayerData : MonoBehaviour
 {
+
     [Header("Player UI Datas")]
     public GameObject MenuCanvas;
 
@@ -22,6 +23,7 @@ public class PlayerData : MonoBehaviour
     private void Awake()
     {
         cam = Camera.main?.transform;
+        DontDestroyOnLoad(gameObject);
     }
 
     private void OnEnable()

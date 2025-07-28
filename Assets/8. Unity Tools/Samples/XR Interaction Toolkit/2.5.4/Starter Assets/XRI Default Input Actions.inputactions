@@ -1288,6 +1288,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "AddInventory",
+                    "type": "Button",
+                    "id": "40549638-0750-40f5-8598-04df5883e8c9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1530,6 +1539,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "AButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a06c33aa-eb06-4de6-abf7-cccdb1fb09a8",
+                    "path": "<XRController>{RightHand}/{SecondaryButton}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "AddInventory",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -1,39 +1,52 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.InputSystem;
 
 public class ItemInteraction : MonoBehaviour
 {
-    public ItemData itemData;
     private XRGrabInteractable grab;
-    private bool released = false;
+    private bool isHeld = false;
 
-    private void Awake()
+    [Header("Input")]
+    public InputActionReference inventoryAddAction; // ‚Üê Input ActionÏóê Ïó∞Í≤∞ (B Î≤ÑÌäº)
+
+    [Header("Item Info")]
+    public ItemData itemData;
+
+    void Awake()
     {
-        if (TryGetComponent(out grab) == false)
-        {
-            Debug.LogError($"[ItemInteraction] XRGrabInteractable¿Ã æ¯Ω¿¥œ¥Ÿ: {name}");
-            return;
-        }
+        grab = GetComponent<XRGrabInteractable>();
 
+        grab.selectEntered.AddListener(OnGrab);
         grab.selectExited.AddListener(OnRelease);
+
+        inventoryAddAction.action.performed += OnInventoryAdd;
+    }
+
+    private void OnDestroy()
+    {
+        grab.selectEntered.RemoveListener(OnGrab);
+        grab.selectExited.RemoveListener(OnRelease);
+
+        inventoryAddAction.action.performed -= OnInventoryAdd;
+    }
+
+    private void OnGrab(SelectEnterEventArgs args)
+    {
+        isHeld = true;
     }
 
     private void OnRelease(SelectExitEventArgs args)
     {
-        released = true;
+        isHeld = false;
     }
 
-    private void Update()
+    private void OnInventoryAdd(InputAction.CallbackContext context)
     {
-        // ø¿∫Í¡ß∆Æ∞° º’ø°º≠ ≥ıø¥∞Ì, æ∆¡˜ ∆ƒ±´µ«¡ˆ æ æ“¿∏∏Á, πˆ∆∞¿Ã ¥≠∑»¿ª ∂ß
-        if (released && Keyboard.current.eKey.wasPressedThisFrame)
+        if (isHeld)
         {
-            if (itemData != null)
-            {
-                InventoryManager.Instance.AddItem(itemData);
-                Destroy(gameObject);
-            }
+            InventoryManager.Instance.AddItem(itemData); // Ïã§Ï†ú Îì±Î°ù
+            Destroy(gameObject);
         }
     }
 }

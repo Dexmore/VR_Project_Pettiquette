@@ -34,10 +34,15 @@ public class InventoryUIController : MonoBehaviour
 
     public void RefreshUI()
     {
-        if (InventoryManager.Instance == null || InventoryManager.Instance.Items == null)
+        if (InventoryManager.Instance == null)
         {
-            Debug.LogWarning("[InventoryUIController] InventoryManager.Instance 또는 Items가 null입니다.");
+            Debug.LogWarning("[InventoryUIController] InventoryManager.Instance가 null입니다.");
             return;
+        }
+
+        if(InventoryManager.Instance.Items == null)
+        {
+            Debug.LogWarning("[InventoryUIController] InventoryManager.Instance.Items가 null입니다.");
         }
 
         Debug.Log("[InventoryUIController] RefreshUI 시작");

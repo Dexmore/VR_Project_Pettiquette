@@ -175,13 +175,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bgmOutput: {fileID: 3861539315676987416}
   bgmDatas:
-  - sceneName: 0.Lobby_Scene
+  - sceneName: 0. Lobby_Scene
     bgmClip: {fileID: 8300000, guid: eddce820c53e4aa48acfd05c98f5f4e1, type: 3}
-  - sceneName: 1.Tutorial_Scene
+  - sceneName: 1. Tutorial_Scene
     bgmClip: {fileID: 8300000, guid: d64637bff79c02843a460090d158456d, type: 3}
   - sceneName: 2. My_Room_Scene
     bgmClip: {fileID: 8300000, guid: 56f08e09750cc5947af6b3b0b9601458, type: 3}
-  - sceneName: 3.Walk_Scene
+  - sceneName: 3. Walk_Scene
     bgmClip: {fileID: 8300000, guid: f73701c531dc7ff4a8ae562c9e98342e, type: 3}
   sfxDatas:
   - category: 0
