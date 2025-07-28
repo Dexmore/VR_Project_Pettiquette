@@ -16,9 +16,6 @@ public class PlayerData : MonoBehaviour
     [Header("Input")]
     public InputActionReference menuToggleAction;
 
-    [Header("XR Interactor (Ray)")]
-    public XRRayInteractor xrRayInteractor; // 인스펙터에 할당 필요
-
     private GameObject menuInstance, audioInstance, inventoryInstance;
     private Transform cam;
 
@@ -47,37 +44,19 @@ public class PlayerData : MonoBehaviour
 
     private void Start()
     {
-        // 1. Menu UI 생성 및 초기화
+        // 메뉴 UI 생성
         if (MenuCanvas != null)
         {
             menuInstance = Instantiate(MenuCanvas);
             menuInstance.SetActive(false);
-
-            // [1] UIOnly 레이어 지정
-            int uiLayer = LayerMask.NameToLayer("UIOnly");
-            menuInstance.layer = uiLayer;
-            foreach (Transform child in menuInstance.GetComponentsInChildren<Transform>(true))
-                child.gameObject.layer = uiLayer;
-
-            // [2] Collider 제거
-            foreach (Collider col in menuInstance.GetComponentsInChildren<Collider>(true))
-                Destroy(col);
-
-            // [3] 카메라 설정
             SetupCanvasCamera();
         }
 
-        // 2. XR Ray에서 UIOnly 레이어 무시
-        if (xrRayInteractor != null)
-        {
-            xrRayInteractor.raycastMask &= ~(1 << LayerMask.NameToLayer("UIOnly"));
-        }
-
-        // 3. 오디오 매니저
+        // 오디오 매니저
         if (AudioManager != null)
             audioInstance = Instantiate(AudioManager);
 
-        // 4. 인벤토리 매니저
+        // 인벤토리 매니저
         if (InventoryManager.Instance == null && InventoryManagerPrefab != null)
             inventoryInstance = Instantiate(InventoryManagerPrefab);
     }
@@ -122,31 +101,10 @@ public class PlayerData : MonoBehaviour
     {
         if (cam == null || uiTransform == null) return;
 
-        float forwardDistance = 3.0f;         // 카메라 전방 위치
-        float verticalOffset = 0.6f;          // 위쪽 오프셋
-        float minHeightAboveGround = 1.2f;    // 최소 바닥 높이
+        float distanceFromCamera = 1f;   // 카메라에서 거리
 
-        Vector3 forward = cam.forward;
-        Vector3 up = Vector3.up;
-        Vector3 targetPosition = cam.position + forward.normalized * forwardDistance + up * verticalOffset;
-
-        // 벽 충돌
-        if (Physics.Raycast(cam.position, forward, out RaycastHit wallHit, forwardDistance + 0.2f, LayerMask.GetMask("Default")))
-        {
-            targetPosition = wallHit.point - forward.normalized * 0.2f;
-        }
-
-        // 바닥 충돌
-        if (Physics.Raycast(targetPosition, Vector3.down, out RaycastHit groundHit, 5f, LayerMask.GetMask("Default")))
-        {
-            float groundY = groundHit.point.y;
-            float minY = groundY + minHeightAboveGround;
-            if (targetPosition.y < minY)
-                targetPosition.y = minY;
-        }
-
-        // 최종 위치 및 회전 적용
-        uiTransform.position = targetPosition;
+        Vector3 targetPos = cam.position + cam.forward * distanceFromCamera;
+        uiTransform.position = targetPos;
         uiTransform.rotation = Quaternion.LookRotation(cam.forward, Vector3.up);
     }
 }
