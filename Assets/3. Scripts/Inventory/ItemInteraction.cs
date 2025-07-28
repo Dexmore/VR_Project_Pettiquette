@@ -13,6 +13,9 @@ public class ItemInteraction : MonoBehaviour
     [Header("Item Info")]
     public ItemData itemData;
 
+    [Header("Display UI")]
+    public DisplayUI display;
+
     void Awake()
     {
         grab = GetComponent<XRGrabInteractable>();
@@ -34,11 +37,21 @@ public class ItemInteraction : MonoBehaviour
     private void OnGrab(SelectEnterEventArgs args)
     {
         isHeld = true;
+
+        if (display != null && itemData != null)
+        {
+            display.ShowUI(itemData);
+        }
     }
 
     private void OnRelease(SelectExitEventArgs args)
     {
         isHeld = false;
+
+        if (display != null && itemData != null)
+        {
+            display.Clear();
+        }
     }
 
     private void OnInventoryAdd(InputAction.CallbackContext context)

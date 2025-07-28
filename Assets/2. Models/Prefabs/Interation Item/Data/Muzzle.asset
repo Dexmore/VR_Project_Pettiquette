@@ -13,6 +13,10 @@ MonoBehaviour:
   m_Name: Muzzle
   m_EditorClassIdentifier: 
   itemName: Muzzle
-  itemDescription: "\uC785\uB9C8\uAC1C"
-  itemIcon: {fileID: 21300000, guid: 17c263f6077f14b218b13656aacd9551, type: 3}
-  itemPrefab: {fileID: 2402334275197623933, guid: 90950c058ce4a3641a481257018385f3, type: 3}
+  itemDescription: "\uAC15\uC544\uC9C0\uAC00 \uB180\uB77C\uAC70\uB098 \uD765\uBD84\uD588\uC744
+    \uB54C,\\n\uB2E4\uB978 \uC0AC\uB78C\uC774\uB098 \uB3D9\uBB3C\uC744 \uBCF4\uD638\uD558\uAE30
+    \uC704\uD574\\n\uC774 \uC785\uB9C8\uAC1C\uB97C \uCC29\uC6A9\uD574\uC694!\\n\\n\uC5B4\uB5BB\uAC8C
+    \uCC29\uC6A9\uD558\uB098\uC694?\\n1. \uC785\uB9C8\uAC1C\uB97C \uC190(\uCEE8\uD2B8\uB864\uB7EC)\uC73C\uB85C
+    \uB4E4\uC5B4\uC694.\\n2. \uAC15\uC544\uC9C0 \uC5BC\uAD74\uC5D0 \uC0B4\uC9DD \uAC16\uB2E4
+    \uB300\uBA74,\\n\uC790\uB3D9\uC73C\uB85C \uCC29\uC6A9\uB3FC\uC694!"
+  itemIcon: {fileID: 21300000, guid: 22d678d20fdf3bc45a8fc131146543da, type: 3}

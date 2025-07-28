@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: Food
   m_EditorClassIdentifier: 
   itemName: Food
-  itemDescription: "\uAC15\uC544\uC9C0 \uAC04\uC2DD"
-  itemIcon: {fileID: 21300000, guid: c76518a5819794083a346812c0906b77, type: 3}
-  itemPrefab: {fileID: 2237065301769995684, guid: a5ffde5dcfcf29e41a700f1b83b8d70d, type: 3}
+  itemDescription: "\uAC15\uC544\uC9C0\uAC00 \uBC30\uACE0\uD50C \uB54C\\n\uC8FC\uB294
+    \uB9DB\uC788\uB294 \uAC04\uC2DD\uC774\uC5D0\uC694!\\n\\n\uC5B4\uB5BB\uAC8C \uC8FC\uB098\uC694?\\n1.
+    \uBA39\uC774\uB97C \uC190(\uCEE8\uD2B8\uB864\uB7EC)\uC73C\uB85C \uB4E4\uC5B4\uC694.\\n2.
+    \uBC25\uADF8\uB987 \uC704\uC5D0 \uC62C\uB9AC\uACE0 \uBC84\uD2BC\uC744 \uAFB9
+    \uB20C\uB7EC\uC694!"
+  itemIcon: {fileID: 21300000, guid: 4f38c81724979644aaa6edec864414d9, type: 3}

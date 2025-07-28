@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: Shovel
   m_EditorClassIdentifier: 
   itemName: Shovel
-  itemDescription: "\uAC15\uC544\uC9C0 \uB625 \uCE58\uC6B0\uB294 \uC0BD"
-  itemIcon: {fileID: 21300000, guid: a6e9e9736379c164e81fdfd2c806a91c, type: 3}
-  itemPrefab: {fileID: 4741505139540716980, guid: eb36349327414e942a457909957e8475, type: 3}
+  itemDescription: "\uAC15\uC544\uC9C0\uAC00 \uBC30\uBCC0\uC744 \uD558\uBA74\\n\uC774
+    \uC0BD\uC73C\uB85C \uAE68\uB057\uD558\uAC8C \uC815\uB9AC\uD560 \uC218 \uC788\uC5B4\uC694!\\n\\n\uC5B4\uB5BB\uAC8C
+    \uCE58\uC6B8\uAE4C\uC694?\\n1. \uC0BD\uC744 \uC190(\uCEE8\uD2B8\uB864\uB7EC)\uC73C\uB85C
+    \uB4E4\uC5B4\uC694.\\n2. \uBC30\uBCC0\uBB3C \uC704\uC5D0 \uC0B4\uC9DD \uAC16\uB2E4
+    \uB300\uBA74,\\n\uC790\uB3D9\uC73C\uB85C \uB9D0\uB054\uD788 \uCE58\uC6CC\uC838\uC694!"
+  itemIcon: {fileID: 21300000, guid: affab44b3838c974595ca328187441b2, type: 3}
