@@ -33,6 +33,7 @@ public class SceneMoveManager : MonoBehaviour
         if (!string.IsNullOrEmpty(sceneToLoad))
         {
             Debug.Log($"A 버튼 눌림 → 씬 전환: {sceneToLoad}");
+            InventoryManager.Instance?.ClearInventory();
             SceneManager.LoadScene(sceneToLoad);
         }
         else

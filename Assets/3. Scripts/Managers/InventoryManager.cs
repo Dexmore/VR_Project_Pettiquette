@@ -58,4 +58,16 @@ public class InventoryManager : MonoBehaviour
                 checker.RefreshCheckUI();
         }
     }
+
+    public void ClearInventory()
+    {
+        Items.Clear();
+
+        // UI 갱신도 같이
+        FindObjectOfType<InventoryUIController>()?.RefreshUI();
+        FindObjectOfType<CheckItemUImanager>()?.RefreshCheckUI();
+
+        Debug.Log("[InventoryManager] 인벤토리 초기화됨");
+    }
+
 }

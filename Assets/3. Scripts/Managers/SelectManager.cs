@@ -17,6 +17,14 @@ public class SelectManager : MonoBehaviour
     public TextMeshProUGUI shibaConditionText;
     public TextMeshProUGUI dalmaConditionText;
 
+    [Header("Select Animal")]
+    public GameObject welshCorgi;
+    public GameObject shibaInu;
+    public GameObject dalmaTian;
+
+    [Header("Animal SpawnPoint")]
+    public Transform animalSpawnPoint;
+
     private void Start()
     {
         CheckUnlockConditions();
@@ -56,6 +64,8 @@ public class SelectManager : MonoBehaviour
         PlayerPrefs.SetString("selected_pet", "welsh");
         selectCanvas.SetActive(false);
         gotoWalkCanvas.SetActive(true);
+
+        Instantiate(welshCorgi, animalSpawnPoint);
     }
 
     public void OnSelectShiba()
@@ -63,6 +73,8 @@ public class SelectManager : MonoBehaviour
         PlayerPrefs.SetString("selected_pet", "shiba");
         selectCanvas.SetActive(false);
         gotoWalkCanvas.SetActive(true);
+
+        Instantiate(shibaInu, animalSpawnPoint);
     }
 
     public void OnSelectDalma()
@@ -70,5 +82,7 @@ public class SelectManager : MonoBehaviour
         PlayerPrefs.SetString("selected_pet", "dalma");
         selectCanvas.SetActive(false);
         gotoWalkCanvas.SetActive(true);
+
+        Instantiate(dalmaTian, animalSpawnPoint);
     }
 }

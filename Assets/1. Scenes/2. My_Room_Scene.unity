@@ -3107,6 +3107,10 @@ MonoBehaviour:
   dalmaSelectButton: {fileID: 1658803472}
   shibaConditionText: {fileID: 276559210}
   dalmaConditionText: {fileID: 417163100}
+  welshCorgi: {fileID: 8781555434551925976, guid: 8937daa5c0e9cad44a460e7d38502285, type: 3}
+  shibaInu: {fileID: 382750587433357205, guid: 4ddb06b327c6e6c43a01b4a9d26681b3, type: 3}
+  dalmaTian: {fileID: 4989723071675511720, guid: c98f1dc54d7c6224791232faddb5a5ba, type: 3}
+  animalSpawnPoint: {fileID: 1546907856}
 --- !u!1 &1068575683
 GameObject:
   m_ObjectHideFlags: 0
@@ -4003,6 +4007,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1451899108}
   m_CullTransparentMesh: 1
+--- !u!1 &1546907855
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1546907856}
+  m_Layer: 0
+  m_Name: AnimalSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1546907856
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1546907855}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.474, y: 0.09, z: -0.488}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8948214527992525654}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1581014150
 GameObject:
   m_ObjectHideFlags: 0
@@ -16586,6 +16621,7 @@ Transform:
   - {fileID: 6649821957975308621}
   - {fileID: 1591865558}
   - {fileID: 638117279}
+  - {fileID: 1546907856}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
