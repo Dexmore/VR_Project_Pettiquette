@@ -367,6 +367,8 @@ MonoBehaviour:
   muteButtonText: {fileID: 787611583999574536}
   prevButton: {fileID: 2703012709262924982}
   nextButton: {fileID: 5510750031792361464}
+  button: {fileID: 0}
+  closeTarget: {fileID: 0}
 --- !u!1 &2654484914093207353
 GameObject:
   m_ObjectHideFlags: 0
