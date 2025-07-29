@@ -189,6 +189,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4134505312059479865}
   - component: {fileID: 8984679010209453879}
+  - component: {fileID: 5542337683330645850}
   m_Layer: 0
   m_Name: XR Interaction Setup
   m_TagString: Untagged
@@ -232,6 +233,19 @@ MonoBehaviour:
   AudioManager: {fileID: 5463070353127076667, guid: 7f4cbd7b0bdab9148b8c9fb1d1765bb5, type: 3}
   InventoryManagerPrefab: {fileID: 4261868192695808999, guid: 08401ca593a40514b92a84e9ce40aaf1, type: 3}
   menuToggleAction: {fileID: -8687747376990552390, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+--- !u!114 &5542337683330645850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7313654230448209575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a75b719ba59d8404b899a8e6bcfd474b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnPointName: PlayerSpawnPoint
 --- !u!1001 &2181405618368934381
 PrefabInstance:
   m_ObjectHideFlags: 0
