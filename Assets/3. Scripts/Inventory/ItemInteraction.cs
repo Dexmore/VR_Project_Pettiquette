@@ -58,8 +58,15 @@ public class ItemInteraction : MonoBehaviour
     {
         if (isHeld)
         {
-            InventoryManager.Instance.AddItem(itemData); // 실제 등록
+            InventoryManager.Instance.AddItem(itemData);
+
+            var checker = FindObjectOfType<CheckItemUImanager>();
+            if (checker != null)
+            {
+                checker.CheckItem(itemData.itemName);
+            }
             Destroy(gameObject);
         }
     }
+
 }
