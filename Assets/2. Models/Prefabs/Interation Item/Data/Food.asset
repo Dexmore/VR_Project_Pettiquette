@@ -19,3 +19,4 @@ MonoBehaviour:
     \uBC25\uADF8\uB987 \uC704\uC5D0 \uC62C\uB9AC\uACE0 \uBC84\uD2BC\uC744 \uAFB9
     \uB20C\uB7EC\uC694!"
   itemIcon: {fileID: 21300000, guid: 4f38c81724979644aaa6edec864414d9, type: 3}
+  itemPrefab: {fileID: 7206270697613653542, guid: 35e13f4cafdd6344cb816f8d250cf462, type: 3}

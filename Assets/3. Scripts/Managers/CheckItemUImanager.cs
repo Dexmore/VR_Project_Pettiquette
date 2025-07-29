@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class CheckItemUImanager : MonoBehaviour
 {
@@ -18,51 +19,33 @@ public class CheckItemUImanager : MonoBehaviour
 
     [Header("Button")]
     public Button SceneMoveButton;
+
     void Start()
     {
-        snackCheckImage.gameObject.SetActive(false);
-        shovelCheckImage.gameObject.SetActive(false);
-        muzzleCheckImage.gameObject.SetActive(false);
-        ballCheckImage.gameObject.SetActive(false);
-        collarCheckImage.gameObject.SetActive(false);
-        bowlCheckImage.gameObject.SetActive(false);
-
         needText.text = string.Empty;
 
         SceneMoveButton.onClick.AddListener(GoToWalkScene);
+
+        RefreshCheckUI(); // 인벤토리 상태 반영
     }
 
-    public void CheckItem(string itemName)
+    public void RefreshCheckUI()
     {
-        switch (itemName)
-        {
-            case "Food":
-                snackCheckImage.gameObject.SetActive(true);
-                break;
-            case "Shovel":
-                shovelCheckImage.gameObject.SetActive(true);
-                break;
-            case "Muzzle":
-                muzzleCheckImage.gameObject.SetActive(true);
-                break;
-            case "Ball":
-                ballCheckImage.gameObject.SetActive(true);
-                break;
-            case "Collar":
-                collarCheckImage.gameObject.SetActive(true);
-                break;
-            case "Bowl":
-                bowlCheckImage.gameObject.SetActive(true);
-                break;
-            default:
-                Debug.LogWarning($"[CheckItemUImanager] 일치하는 항목 없음: {itemName}");
-                break;
-        }
+        var items = InventoryManager.Instance?.Items;
+        if (items == null) return;
+
+        snackCheckImage.gameObject.SetActive(items.Any(i => i.itemName == "Food"));
+        shovelCheckImage.gameObject.SetActive(items.Any(i => i.itemName == "Shovel"));
+        muzzleCheckImage.gameObject.SetActive(items.Any(i => i.itemName == "Muzzle"));
+        ballCheckImage.gameObject.SetActive(items.Any(i => i.itemName == "Ball"));
+        collarCheckImage.gameObject.SetActive(items.Any(i => i.itemName == "Collar"));
+        bowlCheckImage.gameObject.SetActive(items.Any(i => i.itemName == "Bowl"));
     }
 
     public void GoToWalkScene()
     {
-        // 부족한 아이템 리스트
+        RefreshCheckUI(); // 이동하기 전 다시 상태 확인
+
         string missing = "";
 
         if (!snackCheckImage.gameObject.activeSelf) missing += "=> 간식\n";
@@ -74,11 +57,11 @@ public class CheckItemUImanager : MonoBehaviour
 
         if (string.IsNullOrEmpty(missing))
         {
-            SceneManager.LoadScene("3. Walk_Scene"); // 원하는 씬 이름으로 교체
+            SceneManager.LoadScene("3. Walk_Scene");
         }
         else
         {
-            needText.text = $"다음 아이템이 필요해요!{missing}";
+            needText.text = $"다음 아이템이 필요해요!\n{missing}";
         }
     }
 }

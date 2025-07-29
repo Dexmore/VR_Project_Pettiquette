@@ -28,10 +28,34 @@ public class InventoryManager : MonoBehaviour
             Items.Add(item);
             Debug.Log("인벤토리에 " + item.itemName + " 추가됨");
 
+            // 인벤토리 UI 새로고침
             InventoryUIController ui = FindObjectOfType<InventoryUIController>();
             if (ui != null)
-                ui.RefreshUI(); // 수동 호출
+                ui.RefreshUI();
+
+            // 체크 UI 새로고침
+            CheckItemUImanager checker = FindObjectOfType<CheckItemUImanager>();
+            if (checker != null)
+                checker.RefreshCheckUI();
         }
     }
 
+    public void RemoveItem(ItemData item)
+    {
+        if (Items.Contains(item))
+        {
+            Items.Remove(item);
+            Debug.Log("인벤토리에서 " + item.itemName + " 제거됨");
+
+            // 인벤토리 UI 새로고침
+            InventoryUIController ui = FindObjectOfType<InventoryUIController>();
+            if (ui != null)
+                ui.RefreshUI();
+
+            // 체크 UI 새로고침
+            CheckItemUImanager checker = FindObjectOfType<CheckItemUImanager>();
+            if (checker != null)
+                checker.RefreshCheckUI();
+        }
+    }
 }

@@ -20,3 +20,4 @@ MonoBehaviour:
     \uB4E4\uC5B4\uC694.\\n2. \uAC15\uC544\uC9C0 \uC5BC\uAD74\uC5D0 \uC0B4\uC9DD \uAC16\uB2E4
     \uB300\uBA74,\\n\uC790\uB3D9\uC73C\uB85C \uCC29\uC6A9\uB3FC\uC694!"
   itemIcon: {fileID: 21300000, guid: 22d678d20fdf3bc45a8fc131146543da, type: 3}
+  itemPrefab: {fileID: 8609659402875097051, guid: 17456e25b324d674a9cebfc0f0a307fc, type: 3}

@@ -63,7 +63,7 @@ public class ItemInteraction : MonoBehaviour
             var checker = FindObjectOfType<CheckItemUImanager>();
             if (checker != null)
             {
-                checker.CheckItem(itemData.itemName);
+                checker.RefreshCheckUI();
             }
             Destroy(gameObject);
         }
