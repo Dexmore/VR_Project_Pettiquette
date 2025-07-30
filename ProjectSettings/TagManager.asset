@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Hand_Right
   - Hand_Left
+  - Wall
+  - Stranger
   layers:
   - Default
   - TransparentFX
@@ -13,7 +15,7 @@ TagManager:
   - ItemObject
   - Water
   - UI
-  - 
+  - Stranger
   - 
   - 
   - 

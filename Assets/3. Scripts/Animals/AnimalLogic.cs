@@ -45,10 +45,8 @@ public class AnimalLogic : MonoBehaviour
     public float eatDuration = 2f;
 
     [Header("Bark Settings")]
-    public float barkDistance = 3f;  // 짖기 감지 거리
-    public LayerMask barkTargetLayer;
-
-
+    public float barkDistance = 3f;              // 짖기 감지 거리
+    public LayerMask barkTargetLayer;            // 짖기 대상 레이어 마스크
 
     private NavMeshAgent nav;
     private Animator anim;
@@ -63,6 +61,18 @@ public class AnimalLogic : MonoBehaviour
     private AnimalFeedHandler feedHandler;
     private AnimalAnimation animationHandler;
 
+    // ---------- Bark / 이동 관련 필드 ----------
+    private Transform currentBarkTarget = null;
+    private float barkSoundCooldown = 2f;        // 짖음 재생 간격(초)
+    private float nextBarkAt = 0f;               // 전역 쿨다운 타임스탬프
+
+    private Vector3 prevLeashTargetPos;              // 줄 기준 대상(플레이어/지정 타겟)의 이전 위치
+    private float leashTargetMoveThreshold = 0.2f;   // 움직임 판단 임계값 (m/s)
+    private float leashBarkDistanceMul = 1.1f;       // 줄 억제 민감도(거리 배수)
+
+    // ---------- LeashFollow에서 사용 ----------
+    private Vector3 previousPlayerPos;
+    private float playerMoveThreshold = 0.01f;   // 매우 미세한 흔들림도 잡는 기존 임계값(LeashFollow 내부용)
 
     void Awake()
     {
@@ -89,7 +99,16 @@ public class AnimalLogic : MonoBehaviour
     {
         ChangeState(AnimalState.Idle);
         nav.updateRotation = false;
+
+        // 첫 프레임 초기화
+        var leashTarget = leashTargetTransform != null ? leashTargetTransform : player;
+        if (leashTarget != null)
+        {
+            prevLeashTargetPos = leashTarget.position;
+            previousPlayerPos = leashTarget.position;
+        }
     }
+
     private void Update()
     {
         if (currentState == AnimalState.GoToFeed || currentState == AnimalState.Eat)
@@ -100,7 +119,7 @@ public class AnimalLogic : MonoBehaviour
 
         if (currentState == AnimalState.Bark)
         {
-            CheckBarkTarget(); // 타겟이 사라지면 여기서만 상태 해제
+            CheckBarkTarget(); // 타겟이 사라지면 여기서 해제
             return;
         }
 
@@ -110,40 +129,79 @@ public class AnimalLogic : MonoBehaviour
         UpdateRotation();
     }
 
+    // ---------- 가장 가까운 타겟 선택 ----------
+    private Transform GetClosestTarget(Vector3 from, Collider[] hits)
+    {
+        Transform best = null;
+        float bestSqr = float.MaxValue;
+        for (int i = 0; i < hits.Length; i++)
+        {
+            float d = (hits[i].transform.position - from).sqrMagnitude;
+            if (d < bestSqr)
+            {
+                bestSqr = d;
+                best = hits[i].transform;
+            }
+        }
+        return best;
+    }
 
-    private float barkSoundCooldown = 2f;
-    private float barkSoundTimer = 0f;
-    private Transform currentBarkTarget = null;
-
+    // ---------- Bark 타겟/상태 관리 (개선) ----------
     private void CheckBarkTarget()
     {
+        Transform leashTarget = leashTargetTransform != null ? leashTargetTransform : player;
+
+        float distToLeashTarget = 0f;
+        float leashTargetSpeed = 0f;
+        if (leashTarget != null)
+        {
+            distToLeashTarget = Vector3.Distance(transform.position, leashTarget.position);
+            leashTargetSpeed = (leashTarget.position - prevLeashTargetPos).magnitude / Mathf.Max(Time.deltaTime, 0.0001f);
+            prevLeashTargetPos = leashTarget.position;
+        }
+
+        bool leashTargetMoving = leashTargetSpeed > leashTargetMoveThreshold;
+        bool leashTooTight = distToLeashTarget > leashFollowDistance * leashBarkDistanceMul;
+
+        // ★ Leash 억제: 플레이어가 '꽤' 움직이고(AND) 줄이 '확실히' 당겨질 때만 억제
+        if (IsLeashed && (leashTargetMoving && leashTooTight))
+        {
+            if (currentState == AnimalState.Bark)
+                ChangeState(AnimalState.LeashFollow);   // 따라오도록 전환
+            return; // 이 프레임에는 Bark 검사/재생 안 함
+        }
+
+        // 타겟 감지
         Collider[] hits = Physics.OverlapSphere(transform.position, barkDistance, barkTargetLayer);
+        // Debug.Log($"[Bark] hits: {hits.Length}");
 
         if (hits.Length > 0)
         {
-            Transform newTarget = hits[0].transform;
+            Transform newTarget = GetClosestTarget(transform.position, hits); // 가장 가까운 타겟 선택
 
-            if (currentBarkTarget == null || currentBarkTarget != newTarget)
+            // ★ 타겟 전환 처리: 이전 타겟 정리 + 쿨다운 초기화
+            if (currentBarkTarget != null && currentBarkTarget != newTarget)
             {
-                currentBarkTarget = newTarget;
+                var prevSurprise = currentBarkTarget.GetComponent<AISurpriseHandler>();
+                if (prevSurprise != null && prevSurprise.IsSurprised)
+                    prevSurprise.EndSurpriseImmediately();
+
+                nextBarkAt = 0f; // 새 타겟에 즉시 짖을 수 있도록
             }
+
+            currentBarkTarget = newTarget;
 
             if (currentState != AnimalState.Bark)
-            {
                 ChangeState(AnimalState.Bark);
-            }
 
-            barkSoundTimer += Time.deltaTime;
-            if (barkSoundTimer >= barkSoundCooldown)
+            // 전역 쿨다운으로 반복 보장
+            if (Time.time >= nextBarkAt)
             {
                 PlayBarkSound();
-                barkSoundTimer = 0f;
+                nextBarkAt = Time.time + barkSoundCooldown;
 
                 var surprise = currentBarkTarget.GetComponent<AISurpriseHandler>();
-                if (surprise != null)
-                {
-                    surprise.TriggerSurprise(); // 상태 유지
-                }
+                if (surprise != null) surprise.TriggerSurprise();
             }
         }
         else
@@ -152,22 +210,14 @@ public class AnimalLogic : MonoBehaviour
             {
                 var surprise = currentBarkTarget.GetComponent<AISurpriseHandler>();
                 if (surprise != null && surprise.IsSurprised)
-                {
-                    surprise.EndSurpriseImmediately(); 
-                }
-
+                    surprise.EndSurpriseImmediately();
                 currentBarkTarget = null;
             }
 
             if (currentState == AnimalState.Bark)
-            {
-                ChangeState(AnimalState.FreeWalk);
-            }
+                ChangeState(IsLeashed ? AnimalState.LeashFollow : AnimalState.FreeWalk);
         }
-
     }
-
-
 
     private void PlayBarkSound()
     {
@@ -178,6 +228,7 @@ public class AnimalLogic : MonoBehaviour
             Debug.Log("[BarkSound] 재생됨");
         }
     }
+
     private void UpdateStateSwitch()
     {
         switch (currentState)
@@ -247,9 +298,7 @@ public class AnimalLogic : MonoBehaviour
             case AnimalState.Eat:
                 feedHandler.EnterEat();
                 if (audios != null && audios.EatSound != null && audioSource != null)
-                {
                     audioSource.PlayOneShot(audios.EatSound);
-                }
                 break;
 
             case AnimalState.Fetch:
@@ -269,18 +318,14 @@ public class AnimalLogic : MonoBehaviour
                 nav.ResetPath();
                 animationHandler.SetAnimation(PetAnimation.Bark);
 
-                // ★ 진입 즉시 BarkSound 재생
-                PlayBarkSound();
-                barkSoundTimer = 0f; // 타이머도 초기화해서 반복 주기 유지
+                // [옵션] 입장 즉시 1회 재생을 원하면 아래 한 줄의 주석을 해제하세요.
+                // if (Time.time >= nextBarkAt) { PlayBarkSound(); nextBarkAt = Time.time + barkSoundCooldown; }
 
-                // ★ 사람 반응도 즉시
+                // 사람 반응은 즉시 가능
                 if (currentBarkTarget != null)
                 {
                     AISurpriseHandler surprise = currentBarkTarget.GetComponent<AISurpriseHandler>();
-                    if (surprise != null)
-                    {
-                        surprise.TriggerSurprise();
-                    }
+                    if (surprise != null) surprise.TriggerSurprise();
                 }
                 break;
         }
@@ -324,15 +369,12 @@ public class AnimalLogic : MonoBehaviour
         }
     }
 
-    private Vector3 previousPlayerPos;
-    private float playerMoveThreshold = 0.01f;  // 플레이어가 거의 안 움직이는 기준
-
     private void UpdateLeashFollow()
     {
         Transform leashTarget = leashTargetTransform != null ? leashTargetTransform : player;
         float distance = Vector3.Distance(transform.position, leashTarget.position);
 
-        float playerSpeed = (leashTarget.position - previousPlayerPos).magnitude / Time.deltaTime;
+        float playerSpeed = (leashTarget.position - previousPlayerPos).magnitude / Mathf.Max(Time.deltaTime, 0.0001f);
         bool isPlayerMoving = playerSpeed > playerMoveThreshold;
         previousPlayerPos = leashTarget.position;
 
@@ -376,7 +418,6 @@ public class AnimalLogic : MonoBehaviour
         }
     }
 
-
     private void WaitForPatting()
     {
         sitWaitTimer += Time.deltaTime;
@@ -391,7 +432,6 @@ public class AnimalLogic : MonoBehaviour
             nav.isStopped = true;
             nav.ResetPath();
             animationHandler.SetSitPhase(3); // SitEnd
-
             StartCoroutine(WaitAndFreeWalk(1.2f));
         }
     }
@@ -399,7 +439,6 @@ public class AnimalLogic : MonoBehaviour
     private IEnumerator WaitAndFreeWalk(float delay)
     {
         yield return new WaitForSeconds(delay);
-
         ChangeState(AnimalState.FreeWalk);
     }
 
@@ -454,8 +493,6 @@ public class AnimalLogic : MonoBehaviour
         }
     }
 
-
-
     public void SetLeashed(bool on)
     {
         isLeashed = on;
@@ -482,9 +519,7 @@ public class AnimalLogic : MonoBehaviour
     }
 
     public void OnBallSoundDetected(GameObject ball)
-    {
-        Debug.Log($"[AnimalLogic] OnBallSoundDetected 실행됨: {ball.name}");
-    }
+        => Debug.Log($"[AnimalLogic] OnBallSoundDetected 실행됨: {ball.name}");
 
     public void OnBallSpawned(GameObject ball) => fetchHandler.OnBallSpawned(ball);
     public void OnFeedSpawned(GameObject feed) => feedHandler.OnFeedSpawned(feed);

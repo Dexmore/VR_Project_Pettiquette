@@ -2080,7 +2080,7 @@ MonoBehaviour:
   barkDistance: 3
   barkTargetLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
 --- !u!54 &1342529518602572312
 Rigidbody:
   m_ObjectHideFlags: 0
