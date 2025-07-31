@@ -310,7 +310,10 @@ public class AnimalLogic : MonoBehaviour
                 nav.isStopped = true;
                 nav.ResetPath();
                 sitWaitTimer = 0f;
-                animationHandler.SetSitPhase(1); // SitStart
+                pettingTimer = 0f;
+                isPettingTriggerActive = true;
+
+                animationHandler.SetSitPhase(1);
                 break;
 
             case AnimalState.Bark:
@@ -417,6 +420,9 @@ public class AnimalLogic : MonoBehaviour
             }
         }
     }
+
+    private bool isPettingTriggerActive = false;
+    private float pettingTimer = 0f;
 
     private void WaitForPatting()
     {
@@ -538,4 +544,40 @@ public class AnimalLogic : MonoBehaviour
     public AnimalState CurrentState => currentState;
     public void SetState(AnimalState state) => ChangeState(state);
     public bool IsLeashed => isLeashed;
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (!isPettingTriggerActive) return;
+
+        if (other.CompareTag("Hand_Right") || other.CompareTag("Hand_Left"))
+        {
+            pettingTimer += Time.deltaTime;
+
+            if (pettingTimer >= 2f)
+            {
+                Debug.Log("[AnimalLogic] 쓰다듬기 성공! → SitEnd");
+
+                if (!string.IsNullOrEmpty(petId))
+                    PetAffinityManager.Instance?.ChangeAffinityAndSave(petId, 1f);
+
+                isPettingTriggerActive = false;
+                sitWaitTimer = 0f;
+                pettingTimer = 0f;
+
+                animationHandler.SetSitPhase(3); // SitEnd
+                StartCoroutine(WaitAndFreeWalk(1.2f));
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (!isPettingTriggerActive) return;
+
+        if (other.CompareTag("Hand_Right") || other.CompareTag("Hand_Left"))
+        {
+            Debug.Log("[AnimalLogic] 손이 빠졌습니다 → 쓰다듬기 실패");
+            pettingTimer = 0f;
+        }
+    }
 }

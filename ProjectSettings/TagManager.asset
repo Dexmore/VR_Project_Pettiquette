@@ -4,14 +4,15 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Hand_Right
-  - Hand_Left
   - Wall
   - Stranger
   - EventTrigger
   - Poop
   - Bowl
   - Food
+  - PlayerHand
+  - Hand_Right
+  - Hand_Left
   layers:
   - Default
   - TransparentFX
