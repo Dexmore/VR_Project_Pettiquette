@@ -519,7 +519,12 @@ public class AnimalLogic : MonoBehaviour
     }
 
     public void OnBallSoundDetected(GameObject ball)
-        => Debug.Log($"[AnimalLogic] OnBallSoundDetected 실행됨: {ball.name}");
+    {
+        if (ball == null) return;
+        fetchHandler.OnBallSpawned(ball);
+        Debug.Log($"[AnimalLogic] OnBallSoundDetected -> OnBallSpawned: {ball.name}");
+    }
+
 
     public void OnBallSpawned(GameObject ball) => fetchHandler.OnBallSpawned(ball);
     public void OnFeedSpawned(GameObject feed) => feedHandler.OnFeedSpawned(feed);

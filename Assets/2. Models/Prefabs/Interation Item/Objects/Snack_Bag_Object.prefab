@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 5424941632792295604}
   - component: {fileID: 8338207736907366767}
   - component: {fileID: 5481583714918085686}
+  - component: {fileID: 2840613026871597241}
   m_Layer: 3
   m_Name: Snack_Bag_Object
   m_TagString: Untagged
@@ -67,6 +68,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8443176358129457470}
+  - {fileID: 3501028779398370434}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: -90, y: 180, z: 0}
 --- !u!33 &6748012797534186551
@@ -335,3 +337,50 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -5668984478841134232, guid: 9390fb9c22bf21e48a6684e4f831adec, type: 3}
+--- !u!114 &2840613026871597241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7206270697613653542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca5442fbed9fb7942be61c784927eb76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  snackEffect: {fileID: 0}
+  particleSpawnPoint: {fileID: 3501028779398370434}
+  detectDistance: 0.2
+  targetTag: Bowl
+--- !u!1 &8340036045431497020
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3501028779398370434}
+  m_Layer: 3
+  m_Name: Particle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3501028779398370434
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8340036045431497020}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.01745, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 360626053762695166}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

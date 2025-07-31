@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 205422273001610387}
   - component: {fileID: 2820127221769124792}
   - component: {fileID: 8544340663569485973}
+  - component: {fileID: 6980496665430201171}
   m_Layer: 3
   m_Name: Food_1
   m_TagString: Untagged
@@ -83,6 +84,18 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &6980496665430201171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8397812868669263590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80cd69db84669494e8a9141f7233ddde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8410144737277582273
 GameObject:
   m_ObjectHideFlags: 0
@@ -131,7 +144,7 @@ GameObject:
   - component: {fileID: 7395868736009589828}
   m_Layer: 3
   m_Name: Bowl_Object_Full
-  m_TagString: Untagged
+  m_TagString: Bowl
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

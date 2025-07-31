@@ -8,6 +8,10 @@ TagManager:
   - Hand_Left
   - Wall
   - Stranger
+  - EventTrigger
+  - Poop
+  - Bowl
+  - Food
   layers:
   - Default
   - TransparentFX

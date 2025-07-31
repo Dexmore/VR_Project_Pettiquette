@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 1989660616139885568}
   - component: {fileID: 7531799563557715575}
   - component: {fileID: 4548738350770613446}
+  - component: {fileID: 2530928924177548067}
   m_Layer: 3
   m_Name: Shovel_Object
   m_TagString: Untagged
@@ -304,6 +305,18 @@ MonoBehaviour:
   m_StartingSingleGrabTransformers: []
   m_StartingMultipleGrabTransformers: []
   m_AddDefaultGrabTransformers: 1
+--- !u!114 &2530928924177548067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1312948149416095307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2848af261e6d4f746b0d57511ac8f6fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6855260961079125264
 GameObject:
   m_ObjectHideFlags: 0
