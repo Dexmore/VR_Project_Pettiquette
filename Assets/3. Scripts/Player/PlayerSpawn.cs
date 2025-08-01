@@ -1,15 +1,16 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using Unity.XR.CoreUtils;
 
 public class PlayerSpawn : MonoBehaviour
 {
     public string spawnPointName = "PlayerSpawnPoint";
-    public string targetSceneName = "MyRoomScene"; // ÀÌµ¿ À§Ä¡¸¦ °­Á¦ÇÒ ¾À ÀÌ¸§
+    public float cameraHeightOffset = 1.36144f; // ì‹œì•¼ ë†’ì´
 
     private void Awake()
     {
-        DontDestroyOnLoad(gameObject);  // ¾À ÀüÈ¯¿¡µµ À¯Áö
+        DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -20,28 +21,31 @@ public class PlayerSpawn : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == targetSceneName)
-        {
-            StartCoroutine(SetSpawnPointDelayed());
-        }
+        StartCoroutine(SpawnAfterDelay());
     }
 
-    private IEnumerator SetSpawnPointDelayed()
+    private IEnumerator SpawnAfterDelay()
     {
-        // 1ÇÁ·¹ÀÓ ´ë±â: ¾À ¿ÀºêÁ§Æ®°¡ ¾ÆÁ÷ ¿ÏÀüÈ÷ È°¼ºÈ­µÇÁö ¾Ê¾ÒÀ» ¼ö ÀÖÀ½
-        yield return null;
+        yield return new WaitForSeconds(0.1f);
 
         GameObject spawnPoint = GameObject.Find(spawnPointName);
-        if (spawnPoint != null)
+        if (spawnPoint == null)
         {
-            transform.position = spawnPoint.transform.position;
-            transform.rotation = spawnPoint.transform.rotation;
+            Debug.LogError($"[SpawnManager] SpawnPoint '{spawnPointName}'ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
+            yield break;
+        }
 
-            Debug.Log($"[PlayerSpawn] À§Ä¡ ÀÌµ¿ ¿Ï·á ¡æ {spawnPointName} : {spawnPoint.transform.position}");
-        }
-        else
+        XROrigin xrOrigin = FindObjectOfType<XROrigin>();
+        if (xrOrigin == null)
         {
-            Debug.LogWarning($"[PlayerSpawn] '{spawnPointName}'¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù. (¾À: {SceneManager.GetActiveScene().name})");
+            Debug.LogError("[SpawnManager] XR Originì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
+            yield break;
         }
+
+        Vector3 adjustedPos = spawnPoint.transform.position + new Vector3(0f, cameraHeightOffset, 0f);
+        xrOrigin.MoveCameraToWorldLocation(adjustedPos);
+        xrOrigin.transform.rotation = spawnPoint.transform.rotation;
+
+        Debug.Log($"[SpawnManager] XR Origin ì‹œì•¼ ë†’ì´ ë³´ì • í›„ ì´ë™ ì™„ë£Œ â†’ {adjustedPos}");
     }
 }

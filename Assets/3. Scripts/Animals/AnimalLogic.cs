@@ -266,6 +266,13 @@ public class AnimalLogic : MonoBehaviour
     {
         if (currentState == newState) return;
 
+        // 상태 바뀔 때 FetchHandler 초기화
+        if (currentState == AnimalState.Poop && newState != AnimalState.Fetch)
+        {
+            fetchHandler.ResetFetchState();
+            Debug.Log("[AnimalLogic] Poop 후 Fetch 상태 초기화됨");
+        }
+
         currentState = newState;
         EnterStateSwitch(newState);
     }

@@ -36,7 +36,11 @@ public class AnimalFetchHandler
 
     public void UpdateFetch()
     {
-        if (targetBall == null) return;
+        if (targetBall == null)
+        {
+            ResetFetchState(); // 공이 사라졌을 경우도 정리
+            return;
+        }
 
         if (isGoingToBall)
         {
@@ -135,4 +139,14 @@ public class AnimalFetchHandler
     {
         return Vector3.Distance(animal.transform.position, targetBall.transform.position) <= 1.0f;
     }
+
+    public void ResetFetchState()
+    {
+        targetBall = null;
+        isGoingToBall = false;
+        isReturning = false;
+        hasBall = false;
+        hasTriggeredFetchAnim = false;
+    }
+
 }
