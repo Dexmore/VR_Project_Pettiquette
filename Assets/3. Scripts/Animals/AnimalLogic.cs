@@ -3,8 +3,8 @@ using UnityEngine;
 using UnityEngine.AI;
 
 public enum AnimalType { Small, Medium, Large }
-public enum AnimalState { Idle, FreeWalk, FollowPlayer, LeashFollow, GoToFeed, Eat, Fetch, SitSatisfied, Bark }
-public enum PetAnimation { Idle, Walk, EatStart, EatEnd, SitStart, SitEnd, Fetch, Bark }
+public enum AnimalState { Idle, FreeWalk, FollowPlayer, LeashFollow, GoToFeed, Eat, Fetch, SitSatisfied, Bark, Poop }
+public enum PetAnimation { Idle, Walk, EatStart, EatEnd, SitStart, SitEnd, Fetch, Bark, Poop }
 
 [RequireComponent(typeof(NavMeshAgent), typeof(Animator))]
 public class AnimalLogic : MonoBehaviour
@@ -111,6 +111,13 @@ public class AnimalLogic : MonoBehaviour
 
     private void Update()
     {
+        // SitSatisfied일 땐 오직 쓰다듬기만 처리하고 리턴 (Bark/기타 전환 차단)
+        if (currentState == AnimalState.SitSatisfied)
+        {
+            WaitForPatting();
+            return;
+        }
+
         if (currentState == AnimalState.GoToFeed || currentState == AnimalState.Eat)
         {
             feedHandler.UpdateFeed();
@@ -119,7 +126,7 @@ public class AnimalLogic : MonoBehaviour
 
         if (currentState == AnimalState.Bark)
         {
-            CheckBarkTarget(); // 타겟이 사라지면 여기서 해제
+            CheckBarkTarget();
             return;
         }
 
@@ -128,6 +135,7 @@ public class AnimalLogic : MonoBehaviour
         UpdateStateSwitch();
         UpdateRotation();
     }
+
 
     // ---------- 가장 가까운 타겟 선택 ----------
     private Transform GetClosestTarget(Vector3 from, Collider[] hits)
@@ -331,6 +339,11 @@ public class AnimalLogic : MonoBehaviour
                     if (surprise != null) surprise.TriggerSurprise();
                 }
                 break;
+
+            case AnimalState.Poop:
+                nav.isStopped = true;
+                animationHandler.SetAnimation(PetAnimation.Poop);
+                break;
         }
     }
 
@@ -424,17 +437,20 @@ public class AnimalLogic : MonoBehaviour
     private bool isPettingTriggerActive = false;
     private float pettingTimer = 0f;
 
+    [Header("Petting Timeout(옵션)")]
+    public bool useSitAutoTimeout = false;
+    public float sitAutoTimeoutSeconds = 10f;
+
     private void WaitForPatting()
     {
         sitWaitTimer += Time.deltaTime;
 
         if (sitWaitTimer > 2f && sitWaitTimer < 2.1f)
-        {
             animationHandler.SetSitPhase(2); // SitLoop
-        }
 
-        if (sitWaitTimer > 10f)
+        if (useSitAutoTimeout && sitWaitTimer > sitAutoTimeoutSeconds)
         {
+            // 원래 하던 자동 종료
             nav.isStopped = true;
             nav.ResetPath();
             animationHandler.SetSitPhase(3); // SitEnd
@@ -558,7 +574,11 @@ public class AnimalLogic : MonoBehaviour
                 Debug.Log("[AnimalLogic] 쓰다듬기 성공! → SitEnd");
 
                 if (!string.IsNullOrEmpty(petId))
+                {
                     PetAffinityManager.Instance?.ChangeAffinityAndSave(petId, 1f);
+                    Debug.Log($"[Affinity] {petId} 현재 친밀도 = {PetAffinityManager.Instance.GetAffinity(petId):F1}");
+                }
+
 
                 isPettingTriggerActive = false;
                 sitWaitTimer = 0f;

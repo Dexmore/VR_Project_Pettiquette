@@ -176,6 +176,7 @@ GameObject:
   - component: {fileID: 2238914440585468082}
   - component: {fileID: 7017160834125138071}
   - component: {fileID: 5144018870514536562}
+  - component: {fileID: -7970768586567877656}
   m_Layer: 0
   m_Name: Medium_Animal
   m_TagString: Untagged
@@ -200,6 +201,7 @@ Transform:
   - {fileID: 6358776284328587913}
   - {fileID: 5515820593993154247}
   - {fileID: 6023229309626637142}
+  - {fileID: 2433910731392130059}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &4972311921611635019
@@ -275,6 +277,8 @@ MonoBehaviour:
   barkTargetLayer:
     serializedVersion: 2
     m_Bits: 64
+  useSitAutoTimeout: 0
+  sitAutoTimeoutSeconds: 10
 --- !u!54 &2418009221100861201
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -449,6 +453,28 @@ MonoBehaviour:
   - {fileID: 8300000, guid: dcbd86bae5f77bc4fb05a24925fdb366, type: 3}
   - {fileID: 8300000, guid: 77c141f925428c247977ecee6b461148, type: 3}
   EatSound: {fileID: 8300000, guid: 07f050b2ff4c10049b55682d08245341, type: 3}
+--- !u!114 &-7970768586567877656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 382750587433357205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd03076d22e6fbf40bced17a1eaaad5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  poopStateName: Poop
+  minInterval: 60
+  maxInterval: 120
+  PoopObject: {fileID: 7198936611141319738, guid: f780649d3ce5c524aa7bcce863fc707d, type: 3}
+  spawnAnchor: {fileID: 2433910731392130059}
+  backOffset: 0.25
+  yOffset: 0.02
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &604580045444726112
 GameObject:
   m_ObjectHideFlags: 0
@@ -1696,6 +1722,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4798609129161185549}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7024988298771462543
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2433910731392130059}
+  m_Layer: 0
+  m_Name: Back
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2433910731392130059
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7024988298771462543}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.013, z: -0.374}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8820838007030989814}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7174276159052907875
 GameObject:

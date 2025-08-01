@@ -19,37 +19,33 @@ public class PetAffinityManager : MonoBehaviour
 {
     public static PetAffinityManager Instance;
 
-    // 경로 구성
-    private string dirPath;   // .../SaveData
-    private string filePath;  // .../SaveData/pet_affinity.json
-
+    private string dirPath;
+    private string filePath;
     private AllPetData currentData;
 
     private void Awake()
     {
-        // 싱글톤
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            dirPath = Path.Combine(Application.persistentDataPath, "SaveData");
+            filePath = Path.Combine(dirPath, "pet_affinity.json");
+            EnsureDirectory();
+            LoadAffinity();
         }
         else
         {
+            // ✅ 복제본은 즉시 파괴 (그리고 아래 OnDisable에서 저장하지 않게 가드도 걸어둠)
             Destroy(gameObject);
             return;
         }
 
-        // ▶ 저장 경로: persistentDataPath 사용 (빌드 시 안전)
-        //   에디터에서도 정상 동작합니다.
-        dirPath = Path.Combine(Application.persistentDataPath, "SaveData");
-        filePath = Path.Combine(dirPath, "pet_affinity.json");
 
-        // 폴더 보장
-        EnsureDirectory();
-
-        // 로드 (최초 실행이면 기본 파일 생성)
-        LoadAffinity();
     }
+
+    private bool IsPrimary() => ReferenceEquals(this, Instance);
 
     private void EnsureDirectory()
     {
@@ -57,7 +53,7 @@ public class PetAffinityManager : MonoBehaviour
         {
             Directory.CreateDirectory(dirPath);
 #if UNITY_EDITOR
-            Debug.Log($"SaveData 폴더 생성: {dirPath}");
+            Debug.Log($"[Affinity] SaveData 폴더 생성: {dirPath}");
 #endif
         }
     }
@@ -65,6 +61,11 @@ public class PetAffinityManager : MonoBehaviour
     public void UpdateAffinity(string petId, float amount)
     {
         if (currentData == null) currentData = new AllPetData();
+        if (string.IsNullOrEmpty(petId))
+        {
+            Debug.LogWarning("[Affinity] petId가 비어 있어서 업데이트 건너뜀");
+            return;
+        }
 
         var pet = currentData.pets.Find(p => p.petId == petId);
         if (pet != null)
@@ -79,6 +80,10 @@ public class PetAffinityManager : MonoBehaviour
                 affinity = Mathf.Clamp(amount, 0f, 100f)
             });
         }
+
+#if UNITY_EDITOR
+        Debug.Log($"[Affinity] Update → {petId}: {GetAffinity(petId):F1}");
+#endif
     }
 
     public float GetAffinity(string petId)
@@ -90,97 +95,113 @@ public class PetAffinityManager : MonoBehaviour
 
     public void SaveAffinity()
     {
+        if (!IsPrimary()) return; // ✅ 복제본 저장 차단
+
         try
         {
-            EnsureDirectory(); // 혹시 모를 폴더 삭제 대비
-
+            EnsureDirectory();
             if (currentData == null) currentData = new AllPetData();
 
             string json = JsonUtility.ToJson(currentData, true);
             File.WriteAllText(filePath, json);
 #if UNITY_EDITOR
-            Debug.Log($"친밀도 저장 완료\n→ {filePath}");
+            Debug.Log($"[Affinity] 저장 완료 → {filePath}");
 #endif
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"❌ 친밀도 저장 실패: {e.Message}\nPath: {filePath}");
+            Debug.LogError($"[Affinity] 저장 실패: {e.Message}\nPath: {filePath}");
         }
     }
 
     public void LoadAffinity()
     {
+        if (!IsPrimary()) return; // ✅ 복제본 로드 차단
+
         try
         {
             if (File.Exists(filePath))
             {
                 string json = File.ReadAllText(filePath);
-
-                // JsonUtility는 빈 문자열/잘못된 포맷이면 null을 반환할 수 있음
                 var data = JsonUtility.FromJson<AllPetData>(json);
-                if (data == null)
-                {
-                    // 파일이 있지만 파싱 실패 → 초기화 후 덮어쓰기
-                    currentData = new AllPetData();
-                    SaveAffinity();
+                currentData = data ?? new AllPetData();
+
 #if UNITY_EDITOR
-                    Debug.LogWarning("⚠ 저장 파일 파싱 실패 → 새 데이터로 재생성");
+                Debug.Log($"[Affinity] 불러오기 완료 (개수: {currentData.pets.Count})");
 #endif
-                }
-                else
-                {
-                    currentData = data;
-#if UNITY_EDITOR
-                    Debug.Log("🟢 친밀도 불러오기 완료");
-#endif
-                }
             }
             else
             {
-                // 최초 실행: 기본 데이터 생성 후 파일도 바로 만들어 둠
                 currentData = new AllPetData();
-                SaveAffinity();
+                SaveAffinity(); // 초회 생성
 #if UNITY_EDITOR
-                Debug.LogWarning("⚠ 저장된 친밀도 데이터가 없어 새 파일을 생성했습니다.");
+                Debug.LogWarning("[Affinity] 저장 파일 없음 → 새 파일 생성");
 #endif
             }
         }
         catch (System.Exception e)
         {
-            // 로드 중 문제 → 깨끗한 데이터로 재시작
             currentData = new AllPetData();
-            Debug.LogError($"❌ 친밀도 불러오기 실패: {e.Message}\n→ 새 데이터로 초기화 후 저장");
+            Debug.LogError($"[Affinity] 불러오기 실패: {e.Message}\n→ 새 데이터로 초기화 후 저장");
             SaveAffinity();
         }
     }
 
     private void OnApplicationQuit()
     {
-        SaveAffinity(); // 종료 시 자동 저장
+        if (!IsPrimary()) return; // ✅ 복제본 저장 차단
+        SaveAffinity();
     }
 
     private void OnDisable()
     {
-        // 에디터에서 Play 중지 시 OnApplicationQuit가 안 불릴 수 있으니 백업
 #if UNITY_EDITOR
+        // ✅ 에디터에서 복제본이 파괴될 때 빈 데이터로 덮어쓰지 않도록 방지
+        if (!IsPrimary()) return;
         SaveAffinity();
 #endif
     }
 
-    // ▼ 선택 API들
+    // 편의 함수들
     public AllPetData GetCurrentData() => currentData;
 
     public void SetFromData(AllPetData data)
     {
+        if (!IsPrimary()) return;
         currentData = data ?? new AllPetData();
         SaveAffinity();
     }
 
-    // 변화 적용 + 즉시 저장
     public void ChangeAffinityAndSave(string petId, float amount)
     {
+        if (!IsPrimary()) return;
+
         UpdateAffinity(petId, amount);
         SaveAffinity();
-        Debug.Log($"[Affinity] Changed & Saved: {petId} => {GetAffinity(petId):F1}");
+
+#if UNITY_EDITOR
+        Debug.Log($"[Affinity] Changed & Saved: {petId} = {GetAffinity(petId):F1}");
+#endif
+    }
+
+    // 디버그
+    [ContextMenu("Debug: Print All Affinities")]
+    public void DebugPrintAllAffinities()
+    {
+        if (!IsPrimary())
+        {
+            Debug.Log("[Affinity] (복제본) Debug 요청 무시");
+            return;
+        }
+
+        if (currentData == null || currentData.pets == null || currentData.pets.Count == 0)
+        {
+            Debug.Log("[Affinity] 데이터 없음");
+            return;
+        }
+
+        Debug.Log($"[Affinity] 총 {currentData.pets.Count} 마리");
+        foreach (var p in currentData.pets)
+            Debug.Log($"[Affinity] {p.petId} : {p.affinity:F1}");
     }
 }
