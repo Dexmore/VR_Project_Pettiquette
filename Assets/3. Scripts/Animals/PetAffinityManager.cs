@@ -89,9 +89,23 @@ public class PetAffinityManager : MonoBehaviour
     public float GetAffinity(string petId)
     {
         if (currentData == null) return 0f;
+
         var pet = currentData.pets.Find(p => p.petId == petId);
-        return pet != null ? pet.affinity : 0f;
+        if (pet != null)
+            return pet.affinity;
+        else
+        {
+            // 없는 PetId는 자동 등록 (친밀도 0)
+            var newPet = new PetAffinityData { petId = petId, affinity = 0f };
+            currentData.pets.Add(newPet);
+            SaveAffinity();  // 즉시 저장
+#if UNITY_EDITOR
+            Debug.Log($"[Affinity] {petId}가 없어서 새로 추가됨 (Affinity: 0)");
+#endif
+            return 0f;
+        }
     }
+
 
     public void SaveAffinity()
     {

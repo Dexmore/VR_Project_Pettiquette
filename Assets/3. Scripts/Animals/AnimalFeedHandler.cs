@@ -70,7 +70,7 @@ public class AnimalFeedHandler : MonoBehaviour
         }
 
         if (!string.IsNullOrEmpty(animal.petId))
-            PetAffinityManager.Instance?.ChangeAffinityAndSave(animal.petId, 1f);
+            PetAffinityManager.Instance?.ChangeAffinityAndSave(animal.petId, 5f);
 
         isEating = false;
         animal.SetState(AnimalState.Idle);

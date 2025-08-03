@@ -269,12 +269,18 @@ public class AnimalLogic : MonoBehaviour
         // 상태 바뀔 때 FetchHandler 초기화
         if (currentState == AnimalState.Poop && newState != AnimalState.Fetch)
         {
+            ResetNavMeshSpeed();
             fetchHandler.ResetFetchState();
             Debug.Log("[AnimalLogic] Poop 후 Fetch 상태 초기화됨");
         }
 
         currentState = newState;
         EnterStateSwitch(newState);
+    }
+
+    private void ResetNavMeshSpeed()
+    {
+        nav.speed = 1.5f;  // ★ 원래 기본 이동 속도 값으로 되돌림
     }
 
     private void EnterStateSwitch(AnimalState state)
@@ -582,7 +588,7 @@ public class AnimalLogic : MonoBehaviour
 
                 if (!string.IsNullOrEmpty(petId))
                 {
-                    PetAffinityManager.Instance?.ChangeAffinityAndSave(petId, 1f);
+                    PetAffinityManager.Instance?.ChangeAffinityAndSave(petId, 10f);
                     Debug.Log($"[Affinity] {petId} 현재 친밀도 = {PetAffinityManager.Instance.GetAffinity(petId):F1}");
                 }
 

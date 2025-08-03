@@ -17,6 +17,8 @@ public class PoopTrigger : MonoBehaviour
     private AnimalLogic animalLogic;
     private Coroutine poopLoop;
 
+    private AnimalState prePoopState;  // ★ Poop 이전 상태 저장
+
     private void Awake()
     {
         animator = GetComponentInChildren<Animator>();
@@ -40,29 +42,40 @@ public class PoopTrigger : MonoBehaviour
             float wait = Random.Range(minInterval, maxInterval);
             yield return new WaitForSeconds(wait);
 
+            // ★ 특정 상태 중에는 똥 안 싸게 처리 (예시: SitSatisfied, Eat)
+            if (animalLogic.CurrentState == AnimalState.SitSatisfied ||
+            animalLogic.CurrentState == AnimalState.Eat ||
+            animalLogic.CurrentState == AnimalState.Bark ||
+            animalLogic.CurrentState == AnimalState.Poop)
+            {
+                Debug.Log("[PoopTrigger] 현재 상태에서 똥 불가. 대기.");
+                continue;
+            }
+
             if (animalLogic != null)
             {
+                prePoopState = animalLogic.CurrentState;  // ★ Poop 이전 상태 저장
                 animalLogic.SetState(AnimalState.Poop);
                 yield return StartCoroutine(WaitForPoopAnimation());
                 SpawnPoop();
-                animalLogic.SetState(AnimalState.Idle);
+
+                Debug.Log($"[PoopTrigger] Poop 이후 원래 상태 복귀: {prePoopState}");
+                animalLogic.SetState(prePoopState);  // ★ Poop 이후 복귀
             }
         }
     }
 
     private IEnumerator WaitForPoopAnimation()
     {
-        var poopHash = Animator.StringToHash(poopStateName);
+        float poopAnimLength = 5.4f;  // ★ 애니메이션 길이 (Arm_Corgi_Pissing의 실제 길이로 설정)
+        Debug.Log($"[PoopCheck] Poop 애니메이션 길이: {poopAnimLength}초");
 
-        // 상태 진입 대기
-        while (!animator.GetCurrentAnimatorStateInfo(0).IsName(poopStateName))
-            yield return null;
+        yield return new WaitForSeconds(poopAnimLength);
 
-        // 끝날 때까지 대기
-        while (animator.GetCurrentAnimatorStateInfo(0).IsName(poopStateName) &&
-               animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
-            yield return null;
+        Debug.Log("[PoopCheck] Poop 애니메이션 종료됨 (시간 기반)");
     }
+
+
 
     private void SpawnPoop()
     {

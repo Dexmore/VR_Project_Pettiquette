@@ -30,29 +30,35 @@ public class SelectManager : MonoBehaviour
         CheckUnlockConditions();
     }
 
-    void CheckUnlockConditions()
+    public void CheckUnlockConditions()
     {
-        // 친밀도 불러오기
-        float shibaAffinity = PlayerPrefs.GetFloat("shiba_affinity", 0f);
-        float dalmaAffinity = PlayerPrefs.GetFloat("dalma_affinity", 0f);
+        // JSON에서 친밀도 불러오기
+        float welshAffinity = PetAffinityManager.Instance.GetAffinity("welsh");
+        float shibaAffinity = PetAffinityManager.Instance.GetAffinity("shiba");
+        float dalmaAffinity = PetAffinityManager.Instance.GetAffinity("dalma");
 
         // 해금 기준
         float shibaUnlock = 50f;
         float dalmaUnlock = 100f;
 
-        // 버튼 활성화
+        // 버튼 활성화 조건 수정 → 시바는 웰시코기 친밀도로 체크
         welshSelectButton.interactable = true;
-        shibaSelectButton.interactable = shibaAffinity >= shibaUnlock;
-        dalmaSelectButton.interactable = dalmaAffinity >= dalmaUnlock;
+        shibaSelectButton.interactable = welshAffinity >= shibaUnlock;
+        dalmaSelectButton.interactable = shibaAffinity >= dalmaUnlock;
 
         // 텍스트 표시
-        shibaConditionText.text = shibaAffinity >= shibaUnlock
+        shibaConditionText.text = welshAffinity >= shibaUnlock
             ? string.Empty
             : $"시바이누 해금 조건 => 웰시코기 친밀도 {shibaUnlock} 이상";
 
-        dalmaConditionText.text = dalmaAffinity >= dalmaUnlock
+        dalmaConditionText.text = shibaAffinity >= dalmaUnlock
             ? string.Empty
             : $"달마시안 해금 조건 => 시바이누 친밀도 {dalmaUnlock} 이상";
+
+        // 버튼 클릭 이벤트 (중복 방지)
+        welshSelectButton.onClick.RemoveAllListeners();
+        shibaSelectButton.onClick.RemoveAllListeners();
+        dalmaSelectButton.onClick.RemoveAllListeners();
 
         welshSelectButton.onClick.AddListener(OnSelectWelsh);
         shibaSelectButton.onClick.AddListener(OnSelectShiba);
