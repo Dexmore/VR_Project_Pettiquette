@@ -18,7 +18,7 @@ public class DisplayUI : MonoBehaviour
 
         if(objectText != null)
         {
-            objectText.text = data.itemDescription;
+            objectText.text = data.itemDescription.Replace("\\n", "\n");
         }
     }
 

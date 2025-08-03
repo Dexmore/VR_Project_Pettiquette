@@ -140,10 +140,7 @@ PlayerSettings:
   visionOSBundleVersion: 1.0
   tvOSBundleVersion: 1.0
   bundleVersion: 0.1
-  preloadedAssets:
-  - {fileID: 11400000, guid: 07e2e302dd403274491ebcf979b920f3, type: 2}
-  - {fileID: 384025280444219099, guid: 9c1dd2c238b002649b0e337d98bf0ecf, type: 2}
-  - {fileID: 8221744507297257605, guid: 847872621f92a6846b22f50475e3cfaa, type: 2}
+  preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -172,7 +169,7 @@ PlayerSettings:
     tvOS: 0
   overrideDefaultApplicationIdentifier: 0
   AndroidBundleVersionCode: 1
-  AndroidMinSdkVersion: 22
+  AndroidMinSdkVersion: 24
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
   aotOptions: 
@@ -949,8 +946,8 @@ PlayerSettings:
   embeddedLinuxEnableGamepadInput: 1
   hmiLogStartupTiming: 0
   hmiCpuConfiguration: 
-  apiCompatibilityLevel: 6
-  activeInputHandler: 2
+  apiCompatibilityLevel: 3
+  activeInputHandler: 1
   windowsGamepadBackendHint: 0
   cloudProjectId: 837169da-7824-483f-85a2-d05b60f3f894
   framebufferDepthMemorylessMode: 0

@@ -45,8 +45,8 @@ public class AnimalLogic : MonoBehaviour
     public float eatDuration = 2f;
 
     [Header("Bark Settings")]
-    public float barkDistance = 3f;              // 짖기 감지 거리
-    public LayerMask barkTargetLayer;            // 짖기 대상 레이어 마스크
+    public float barkDistance = 3f;
+    public LayerMask barkTargetLayer;
 
     private NavMeshAgent nav;
     private Animator anim;
@@ -63,16 +63,16 @@ public class AnimalLogic : MonoBehaviour
 
     // ---------- Bark / 이동 관련 필드 ----------
     private Transform currentBarkTarget = null;
-    private float barkSoundCooldown = 2f;        // 짖음 재생 간격(초)
-    private float nextBarkAt = 0f;               // 전역 쿨다운 타임스탬프
+    private float barkSoundCooldown = 2f;
+    private float nextBarkAt = 0f;
 
-    private Vector3 prevLeashTargetPos;              // 줄 기준 대상(플레이어/지정 타겟)의 이전 위치
-    private float leashTargetMoveThreshold = 0.2f;   // 움직임 판단 임계값 (m/s)
-    private float leashBarkDistanceMul = 1.1f;       // 줄 억제 민감도(거리 배수)
+    private Vector3 prevLeashTargetPos;
+    private float leashTargetMoveThreshold = 0.2f;
+    private float leashBarkDistanceMul = 1.1f;
 
     // ---------- LeashFollow에서 사용 ----------
     private Vector3 previousPlayerPos;
-    private float playerMoveThreshold = 0.01f;   // 매우 미세한 흔들림도 잡는 기존 임계값(LeashFollow 내부용)
+    private float playerMoveThreshold = 0.01f;
 
     void Awake()
     {
@@ -111,7 +111,6 @@ public class AnimalLogic : MonoBehaviour
 
     private void Update()
     {
-        // SitSatisfied일 땐 오직 쓰다듬기만 처리하고 리턴 (Bark/기타 전환 차단)
         if (currentState == AnimalState.SitSatisfied)
         {
             WaitForPatting();
@@ -130,14 +129,11 @@ public class AnimalLogic : MonoBehaviour
             return;
         }
 
-        // Bark가 아닐 때만 나머지 동작 실행
         CheckBarkTarget();
         UpdateStateSwitch();
         UpdateRotation();
     }
 
-
-    // ---------- 가장 가까운 타겟 선택 ----------
     private Transform GetClosestTarget(Vector3 from, Collider[] hits)
     {
         Transform best = null;
@@ -154,7 +150,6 @@ public class AnimalLogic : MonoBehaviour
         return best;
     }
 
-    // ---------- Bark 타겟/상태 관리 (개선) ----------
     private void CheckBarkTarget()
     {
         Transform leashTarget = leashTargetTransform != null ? leashTargetTransform : player;
@@ -171,30 +166,26 @@ public class AnimalLogic : MonoBehaviour
         bool leashTargetMoving = leashTargetSpeed > leashTargetMoveThreshold;
         bool leashTooTight = distToLeashTarget > leashFollowDistance * leashBarkDistanceMul;
 
-        // ★ Leash 억제: 플레이어가 '꽤' 움직이고(AND) 줄이 '확실히' 당겨질 때만 억제
         if (IsLeashed && (leashTargetMoving && leashTooTight))
         {
             if (currentState == AnimalState.Bark)
-                ChangeState(AnimalState.LeashFollow);   // 따라오도록 전환
-            return; // 이 프레임에는 Bark 검사/재생 안 함
+                ChangeState(AnimalState.LeashFollow);
+            return;
         }
 
-        // 타겟 감지
         Collider[] hits = Physics.OverlapSphere(transform.position, barkDistance, barkTargetLayer);
-        // Debug.Log($"[Bark] hits: {hits.Length}");
 
         if (hits.Length > 0)
         {
-            Transform newTarget = GetClosestTarget(transform.position, hits); // 가장 가까운 타겟 선택
+            Transform newTarget = GetClosestTarget(transform.position, hits);
 
-            // ★ 타겟 전환 처리: 이전 타겟 정리 + 쿨다운 초기화
             if (currentBarkTarget != null && currentBarkTarget != newTarget)
             {
                 var prevSurprise = currentBarkTarget.GetComponent<AISurpriseHandler>();
                 if (prevSurprise != null && prevSurprise.IsSurprised)
                     prevSurprise.EndSurpriseImmediately();
 
-                nextBarkAt = 0f; // 새 타겟에 즉시 짖을 수 있도록
+                nextBarkAt = 0f;
             }
 
             currentBarkTarget = newTarget;
@@ -202,7 +193,6 @@ public class AnimalLogic : MonoBehaviour
             if (currentState != AnimalState.Bark)
                 ChangeState(AnimalState.Bark);
 
-            // 전역 쿨다운으로 반복 보장
             if (Time.time >= nextBarkAt)
             {
                 PlayBarkSound();
@@ -233,7 +223,6 @@ public class AnimalLogic : MonoBehaviour
         {
             int i = Random.Range(0, audios.BarkSound.Length);
             audioSource.PlayOneShot(audios.BarkSound[i]);
-            Debug.Log("[BarkSound] 재생됨");
         }
     }
 
@@ -266,7 +255,6 @@ public class AnimalLogic : MonoBehaviour
     {
         if (currentState == newState) return;
 
-        // 상태 바뀔 때 FetchHandler 초기화
         if (currentState == AnimalState.Poop && newState != AnimalState.Fetch)
         {
             ResetNavMeshSpeed();
@@ -280,7 +268,7 @@ public class AnimalLogic : MonoBehaviour
 
     private void ResetNavMeshSpeed()
     {
-        nav.speed = 1.5f;  // ★ 원래 기본 이동 속도 값으로 되돌림
+        nav.speed = 1.5f;
     }
 
     private void EnterStateSwitch(AnimalState state)
@@ -342,10 +330,6 @@ public class AnimalLogic : MonoBehaviour
                 nav.ResetPath();
                 animationHandler.SetAnimation(PetAnimation.Bark);
 
-                // [옵션] 입장 즉시 1회 재생을 원하면 아래 한 줄의 주석을 해제하세요.
-                // if (Time.time >= nextBarkAt) { PlayBarkSound(); nextBarkAt = Time.time + barkSoundCooldown; }
-
-                // 사람 반응은 즉시 가능
                 if (currentBarkTarget != null)
                 {
                     AISurpriseHandler surprise = currentBarkTarget.GetComponent<AISurpriseHandler>();

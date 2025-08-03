@@ -30,15 +30,32 @@ public class SceneMoveManager : MonoBehaviour
 
     private void OnAPressed(InputAction.CallbackContext ctx)
     {
-        if (!string.IsNullOrEmpty(sceneToLoad))
+        string targetScene = sceneToLoad;
+
+        // 튜토리얼 스킵 체크
+        if (sceneToLoad == "TutorialScene" && SaveManager.Instance != null)
         {
-            Debug.Log($"A 버튼 눌림 → 씬 전환: {sceneToLoad}");
+            if (SaveManager.Instance.IsTutorialCleared())
+            {
+                targetScene = "2. My_Room_Scene"; // 튜토리얼 클리어했으면 방 씬으로 이동
+                Debug.Log("튜토리얼 클리어 상태 → 방으로 이동");
+            }
+            else
+            {
+                Debug.Log("튜토리얼 미클리어 → 튜토리얼 진행");
+            }
+        }
+
+        if (!string.IsNullOrEmpty(targetScene))
+        {
+            Debug.Log($"A 버튼 눌림 → 씬 전환: {targetScene}");
             InventoryManager.Instance?.ClearInventory();
-            SceneManager.LoadScene(sceneToLoad);
+            SceneManager.LoadScene(targetScene);
         }
         else
         {
             Debug.LogWarning("sceneToLoad가 비어 있습니다!");
         }
     }
+
 }

@@ -929,7 +929,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uB2EC\uB9C8\uC2DC\uC548"
+  m_text: "\uB2EC\uB9C8\uC2DC\uC548\n\uD604\uC7AC \uCE5C\uBC00\uB3C4 : "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bbad6fb1aede21a4da73021c4a53c73e, type: 2}
   m_sharedMaterial: {fileID: -7602156011841167110, guid: bbad6fb1aede21a4da73021c4a53c73e, type: 2}
@@ -956,7 +956,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 48.75
+  m_fontSize: 23.35
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2723,7 +2723,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC2DC\uBC14\uC774\uB204"
+  m_text: "\uC2DC\uBC14\uC774\uB204\n\uD604\uC7AC \uCE5C\uBC00\uB3C4 : "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bbad6fb1aede21a4da73021c4a53c73e, type: 2}
   m_sharedMaterial: {fileID: -7602156011841167110, guid: bbad6fb1aede21a4da73021c4a53c73e, type: 2}
@@ -2750,7 +2750,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 48.75
+  m_fontSize: 23.35
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3155,6 +3155,9 @@ MonoBehaviour:
   shibaInu: {fileID: 382750587433357205, guid: 4ddb06b327c6e6c43a01b4a9d26681b3, type: 3}
   dalmaTian: {fileID: 4989723071675511720, guid: c98f1dc54d7c6224791232faddb5a5ba, type: 3}
   animalSpawnPoint: {fileID: 1546907856}
+  welshAffinityText: {fileID: 1699690431}
+  shibaAffinityText: {fileID: 932862281}
+  dalmaAffinityText: {fileID: 521896993}
 --- !u!1 &1068575683
 GameObject:
   m_ObjectHideFlags: 0
@@ -4545,7 +4548,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC6F0\uC2DC\uCF54\uAE30"
+  m_text: "\uC6F0\uC2DC\uCF54\uAE30\n\uD604\uC7AC \uCE5C\uBC00\uB3C4 : "
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bbad6fb1aede21a4da73021c4a53c73e, type: 2}
   m_sharedMaterial: {fileID: -7602156011841167110, guid: bbad6fb1aede21a4da73021c4a53c73e, type: 2}
@@ -4572,7 +4575,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 48.75
+  m_fontSize: 23.35
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

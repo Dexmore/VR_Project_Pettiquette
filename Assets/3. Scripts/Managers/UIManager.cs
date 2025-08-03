@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -21,6 +23,14 @@ public class UIManager : MonoBehaviour
     public Button SaveButton;
     public Button BackButton;
 
+    [Header("Affinity Display")]
+    public GameObject affinityTextObject;
+    public TextMeshProUGUI affinityText;
+
+    private string selectedPetId;
+    private float currentAffinity = -1f;
+    private string currentSceneName = "";
+
     private void Awake()
     {
         if (Instance == null)
@@ -41,6 +51,43 @@ public class UIManager : MonoBehaviour
         HelpButton.onClick.AddListener(() => SwitchToUI(helpUIPrefab));
         SaveButton.onClick.AddListener(Save);
         BackButton.onClick.AddListener(CloseMenu);
+
+        selectedPetId = PlayerPrefs.GetString("selected_pet", "welsh");
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        currentSceneName = SceneManager.GetActiveScene().name;
+
+        UpdateAffinityText(); // 처음 한번 갱신
+    }
+
+    private void Update()
+    {
+        if (currentSceneName != "3. Walk_Scene") return; // 씬 이름 체크 (정확히 "3. Walk_Scene"일 때만)
+
+        if (affinityTextObject == null || affinityText == null) return; // 안전처리
+
+        float newAffinity = PetAffinityManager.Instance.GetAffinity(selectedPetId);
+        if (Mathf.Abs(newAffinity - currentAffinity) > 0.01f)
+        {
+            currentAffinity = newAffinity;
+            UpdateAffinityText();
+        }
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        currentSceneName = scene.name;
+
+        if (affinityTextObject != null)
+        {
+            affinityTextObject.SetActive(scene.name == "3. Walk_Scene");
+        }
+    }
+
+    private void UpdateAffinityText()
+    {
+        if (affinityText != null)
+            affinityText.text = $"현재 친밀도 : {currentAffinity:F1}";
     }
 
     public void ToggleMenu()
@@ -70,7 +117,6 @@ public class UIManager : MonoBehaviour
 
     public void SwitchToUI(GameObject targetUI)
     {
-        // 메뉴는 끄고, 해당 UI만 켬
         menuPrefab.SetActive(false);
         CloseAllSubCanvas();
         targetUI.SetActive(true);
@@ -86,5 +132,6 @@ public class UIManager : MonoBehaviour
     public void Save()
     {
         Debug.Log("Game Saved!");
+        SaveManager.Instance?.SaveGame();
     }
 }

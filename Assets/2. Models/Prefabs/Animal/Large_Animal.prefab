@@ -994,7 +994,7 @@ GameObject:
   - component: {fileID: 6416007628665016279}
   m_Layer: 0
   m_Name: Mouth
-  m_TagString: Untagged
+  m_TagString: DogMouth
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1781,7 +1781,7 @@ GameObject:
   - component: {fileID: 7340797535303406388}
   m_Layer: 0
   m_Name: Neck
-  m_TagString: Untagged
+  m_TagString: DogNeck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 1969781115797977265}
   - component: {fileID: 8129011027793347821}
   - component: {fileID: 8479499309908502790}
-  - component: {fileID: 4649747671894827086}
+  - component: {fileID: 5657091565326165959}
   m_Layer: 3
   m_Name: Muzzle_Object
   m_TagString: Untagged
@@ -313,7 +313,7 @@ MonoBehaviour:
   m_StartingSingleGrabTransformers: []
   m_StartingMultipleGrabTransformers: []
   m_AddDefaultGrabTransformers: 1
---- !u!64 &4649747671894827086
+--- !u!64 &5657091565326165959
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
