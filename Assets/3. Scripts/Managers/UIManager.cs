@@ -46,25 +46,49 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        InventoryButton.onClick.AddListener(() => SwitchToUI(inventoryPrefab));
-        SettingButton.onClick.AddListener(() => SwitchToUI(settingPrefab));
-        HelpButton.onClick.AddListener(() => SwitchToUI(helpUIPrefab));
-        SaveButton.onClick.AddListener(Save);
-        BackButton.onClick.AddListener(CloseMenu);
+        InventoryButton.onClick.AddListener(() =>
+        {
+            SwitchToUI(inventoryPrefab);
+            PlayUISFX();
+        });
+
+        SettingButton.onClick.AddListener(() =>
+        {
+            SwitchToUI(settingPrefab);
+            PlayUISFX();
+        });
+
+        HelpButton.onClick.AddListener(() =>
+        {
+            SwitchToUI(helpUIPrefab);
+            PlayUISFX();
+        });
+
+        SaveButton.onClick.AddListener(() =>
+        {
+            Save();
+            PlayUISFX();
+        });
+
+        BackButton.onClick.AddListener(() =>
+        {
+            CloseMenu();
+            PlayUISFX();
+        });
 
         selectedPetId = PlayerPrefs.GetString("selected_pet", "welsh");
 
         SceneManager.sceneLoaded += OnSceneLoaded;
         currentSceneName = SceneManager.GetActiveScene().name;
 
-        UpdateAffinityText(); // 처음 한번 갱신
+        UpdateAffinityText();
     }
 
     private void Update()
     {
-        if (currentSceneName != "3. Walk_Scene") return; // 씬 이름 체크 (정확히 "3. Walk_Scene"일 때만)
+        if (currentSceneName != "3. Walk_Scene") return;
 
-        if (affinityTextObject == null || affinityText == null) return; // 안전처리
+        if (affinityTextObject == null || affinityText == null) return;
 
         float newAffinity = PetAffinityManager.Instance.GetAffinity(selectedPetId);
         if (Mathf.Abs(newAffinity - currentAffinity) > 0.01f)
@@ -100,6 +124,7 @@ public class UIManager : MonoBehaviour
         {
             CloseMenu();
         }
+        PlayUISFX();
     }
 
     public void OpenMenu()
@@ -133,5 +158,13 @@ public class UIManager : MonoBehaviour
     {
         Debug.Log("Game Saved!");
         SaveManager.Instance?.SaveGame();
+    }
+
+    private void PlayUISFX()
+    {
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(SFXCategory.UI, Vector3.zero);
+        }
     }
 }
